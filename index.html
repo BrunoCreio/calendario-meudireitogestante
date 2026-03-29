@@ -256,6 +256,46 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .analysis-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px}
 .analysis-title{font-size:.95rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
+/* ===== TIKTOK THEME ===== */
+.tk .header-progress-fill{background:linear-gradient(90deg,#ff0050,#00f2ea,#ff0050);background-size:200% 100%;animation:shimmer 3s linear infinite}
+.tk .nav-btn.active{background:#ff0050;border-color:#ff0050;box-shadow:0 0 20px rgba(255,0,80,.12)}
+.tk .hook-box{background:linear-gradient(135deg,rgba(255,0,80,.06),rgba(0,242,234,.06));border-color:rgba(255,0,80,.2);color:#ff0050}
+.tk .htag{background:rgba(0,242,234,.08);color:#00f2ea}
+.tk .ov-bar-fill{background:linear-gradient(90deg,#ff0050,#00f2ea)}
+
+/* ===== ADMIN PANEL ===== */
+.admin-wrapper{max-width:900px;margin:0 auto;padding:20px 16px 40px}
+.admin-header{text-align:center;margin-bottom:24px}
+.admin-header h2{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:700;color:var(--text)}
+.admin-header h2 span{color:var(--accent)}
+.admin-header p{font-size:.8rem;color:var(--text3);margin-top:4px}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:500px){.admin-grid{grid-template-columns:1fr}}
+.admin-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
+.admin-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.admin-card.ac-ig::before{background:linear-gradient(90deg,#833ab4,#fd1d1d,#fcb045)}
+.admin-card.ac-tk::before{background:linear-gradient(90deg,#00f2ea,#ff0050)}
+.admin-card.ac-total::before{background:linear-gradient(90deg,var(--accent),var(--gold))}
+.admin-card-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.admin-bar{background:var(--bg);border-radius:10px;height:10px;overflow:hidden;margin:10px 0}
+.admin-bar-fill{height:100%;border-radius:10px;transition:width .6s}
+.admin-bar-fill.ig{background:linear-gradient(90deg,#833ab4,#fd1d1d,#fcb045)}
+.admin-bar-fill.tk{background:linear-gradient(90deg,#00f2ea,#ff0050)}
+.admin-bar-fill.total{background:linear-gradient(90deg,var(--accent),var(--gold))}
+.admin-stat{font-size:.78rem;color:var(--text2);display:flex;justify-content:space-between;margin-top:6px}
+.admin-big{font-size:2rem;font-weight:800;color:var(--text);margin:6px 0}
+.admin-section{margin-bottom:24px}
+.admin-section-title{font-size:.85rem;font-weight:700;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.admin-task-list{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.admin-task{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.83rem;color:var(--text2);display:flex;align-items:center;gap:10px}
+.admin-task:last-child{border:none}
+.admin-task-day{font-size:.65rem;font-weight:700;color:var(--text3);background:var(--bg);padding:2px 8px;border-radius:6px;white-space:nowrap}
+.admin-task-badge{font-size:.6rem;padding:2px 6px;border-radius:6px;font-weight:700}
+.admin-task-badge.ig{background:rgba(131,58,180,.1);color:#c084fc}
+.admin-task-badge.tk{background:rgba(255,0,80,.08);color:#ff6b8a}
+.admin-logout{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text3);font-size:.78rem;cursor:pointer;margin-top:20px;font-family:inherit;transition:all .2s}
+.admin-logout:hover{border-color:var(--red);color:var(--red)}
+
 /* Responsive */
 @media(max-width:600px){
   .header-brand h1{font-size:1.2rem}
@@ -361,7 +401,7 @@ const isTk=()=>currentUser==='eduarda';
 
 // Check if already logged in
 (function(){
-  const saved=sessionStorage.getItem('mdg_user');
+  const saved=localStorage.getItem('mdg_user');
   if(saved&&USERS[saved]){
     currentUser=saved;
     document.getElementById('loginScreen').classList.add('hidden');
@@ -386,7 +426,7 @@ function handleLogin(e){
 
   // Success
   currentUser=user;
-  sessionStorage.setItem('mdg_user',user);
+  localStorage.setItem('mdg_user',user);
   btn.classList.add('loading');
   btn.textContent='Entrando...';
 
@@ -1345,7 +1385,173 @@ function showDay(i){
   window.scrollTo({top:document.getElementById('nav').offsetTop-60,behavior:'smooth'});
 }
 
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+function adminKeysIG(){
+  const k=[];
+  DAYS.forEach((d,di)=>{
+    d.posts.forEach((p,pi)=>(p.tasks||[]).forEach((_,ti)=>k.push(`ig_${di}_${pi}_${ti}`)));
+    (d.stories||[]).forEach((_,si)=>k.push(`ig_${di}_s${si}`));
+    if(d.analysis){
+      d.analysis.metrics.forEach((_,i)=>k.push(`ig_${di}_am${i}`));
+      d.analysis.decisions.forEach((_,i)=>k.push(`ig_${di}_ad${i}`));
+    }
+  });
+  return k;
+}
+function adminKeysTK(){
+  const k=[];
+  DAYS.forEach((d,di)=>{
+    d.posts.forEach((p,pi)=>(p.tasks||[]).forEach((_,ti)=>k.push(`tk_${di}_${pi}_${ti}`)));
+    (d.stories||[]).forEach((_,si)=>k.push(`tk_${di}_s${si}`));
+    if(d.analysis){
+      d.analysis.metrics.forEach((_,i)=>k.push(`tk_${di}_am${i}`));
+      d.analysis.decisions.forEach((_,i)=>k.push(`tk_${di}_ad${i}`));
+    }
+  });
+  return k;
+}
+function pendingTasks(prefix,label,max){
+  const tasks=[];
+  DAYS.forEach((d,di)=>{
+    d.posts.forEach((p,pi)=>{
+      (p.tasks||[]).forEach((t,ti)=>{
+        if(tasks.length>=max)return;
+        const k=`${prefix}${di}_${pi}_${ti}`;
+        if(!isOk(k))tasks.push({day:d.day,title:p.title,task:t,label});
+      });
+    });
+  });
+  return tasks;
+}
+
+function renderAdmin(){
+  const app=document.getElementById('appWrapper');
+  // Hide normal UI
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('chartsSection').style.display='none';
+  document.getElementById('nav').style.display='none';
+  document.querySelector('.header p')||document.getElementById('headerSub');
+  const headerP=document.getElementById('headerSub');
+  if(headerP)headerP.textContent='👑 Painel Administrativo';
+
+  const igKeys=adminKeysIG(),tkKeys=adminKeysTK();
+  const igDone=igKeys.filter(isOk).length,tkDone=tkKeys.filter(isOk).length;
+  const igPct=igKeys.length?Math.round(igDone/igKeys.length*100):0;
+  const tkPct=tkKeys.length?Math.round(tkDone/tkKeys.length*100):0;
+  const totalKeys=igKeys.length+tkKeys.length,totalDone=igDone+tkDone;
+  const totalPct=totalKeys?Math.round(totalDone/totalKeys*100):0;
+
+  const igPosts=DAYS.reduce((s,d)=>s+d.posts.length,0);
+  const igReels=DAYS.reduce((s,d)=>s+d.posts.filter(p=>p.type==='reel').length,0);
+
+  // Pending tasks
+  const igPending=pendingTasks('ig_','Instagram',5);
+  const tkPending=pendingTasks('tk_','TikTok',5);
+
+  // Days with progress
+  const igDaysComplete=DAYS.filter((_,di)=>{
+    const k=[];
+    DAYS[di].posts.forEach((p,pi)=>(p.tasks||[]).forEach((_,ti)=>k.push(`ig_${di}_${pi}_${ti}`)));
+    (DAYS[di].stories||[]).forEach((_,si)=>k.push(`ig_${di}_s${si}`));
+    return k.length&&k.every(isOk);
+  }).length;
+  const tkDaysComplete=DAYS.filter((_,di)=>{
+    const k=[];
+    DAYS[di].posts.forEach((p,pi)=>(p.tasks||[]).forEach((_,ti)=>k.push(`tk_${di}_${pi}_${ti}`)));
+    return k.length&&k.every(isOk);
+  }).length;
+
+  let h=`<div class="admin-wrapper">`;
+  h+=`<div class="admin-header"><h2>Painel <span>Admin</span></h2><p>Gerenciamento das criadoras de conteúdo</p></div>`;
+
+  // Cards grid
+  h+=`<div class="admin-grid">`;
+
+  // Instagram card
+  h+=`<div class="admin-card ac-ig">
+    <div class="admin-card-title">📸 Instagram — Marcela</div>
+    <div class="admin-big">${igPct}%</div>
+    <div class="admin-bar"><div class="admin-bar-fill ig" style="width:${igPct}%"></div></div>
+    <div class="admin-stat"><span>${igDone} de ${igKeys.length} tarefas</span><span>${igDaysComplete}/30 dias completos</span></div>
+    <div class="admin-stat"><span>${igPosts} posts planejados</span><span>${igReels} reels</span></div>
+  </div>`;
+
+  // TikTok card
+  h+=`<div class="admin-card ac-tk">
+    <div class="admin-card-title">🎵 TikTok — Eduarda</div>
+    <div class="admin-big">${tkPct}%</div>
+    <div class="admin-bar"><div class="admin-bar-fill tk" style="width:${tkPct}%"></div></div>
+    <div class="admin-stat"><span>${tkDone} de ${tkKeys.length} tarefas</span><span>${tkDaysComplete}/30 dias completos</span></div>
+    <div class="admin-stat"><span>${igPosts} vídeos planejados</span><span>2/dia</span></div>
+  </div>`;
+
+  // Total card
+  h+=`<div class="admin-card ac-total" style="grid-column:1/-1">
+    <div class="admin-card-title">📊 Progresso Total — Todas as Plataformas</div>
+    <div class="admin-big">${totalPct}%</div>
+    <div class="admin-bar"><div class="admin-bar-fill total" style="width:${totalPct}%"></div></div>
+    <div class="admin-stat"><span>${totalDone} de ${totalKeys} tarefas concluídas</span><span>${igDaysComplete+tkDaysComplete} dias 100% completos</span></div>
+  </div>`;
+
+  h+=`</div>`; // close grid
+
+  // Pending tasks - Instagram
+  h+=`<div class="admin-section">`;
+  h+=`<div class="admin-section-title">⏳ Próximas Tarefas — Marcela (Instagram)</div>`;
+  h+=`<div class="admin-task-list">`;
+  if(igPending.length){
+    igPending.forEach(t=>{
+      h+=`<div class="admin-task"><span class="admin-task-day">Dia ${t.day}</span><span class="admin-task-badge ig">IG</span><span>${t.task}</span><span style="margin-left:auto;font-size:.7rem;color:var(--text3)">${t.title}</span></div>`;
+    });
+  }else{
+    h+=`<div class="admin-task" style="color:var(--green)">✅ Todas as tarefas concluídas!</div>`;
+  }
+  h+=`</div></div>`;
+
+  // Pending tasks - TikTok
+  h+=`<div class="admin-section">`;
+  h+=`<div class="admin-section-title">⏳ Próximas Tarefas — Eduarda (TikTok)</div>`;
+  h+=`<div class="admin-task-list">`;
+  if(tkPending.length){
+    tkPending.forEach(t=>{
+      h+=`<div class="admin-task"><span class="admin-task-day">Dia ${t.day}</span><span class="admin-task-badge tk">TK</span><span>${t.task}</span><span style="margin-left:auto;font-size:.7rem;color:var(--text3)">${t.title}</span></div>`;
+    });
+  }else{
+    h+=`<div class="admin-task" style="color:var(--green)">✅ Todas as tarefas concluídas!</div>`;
+  }
+  h+=`</div></div>`;
+
+  // KPIs section
+  h+=`<div class="admin-section">`;
+  h+=`<div class="admin-section-title">🎯 KPIs & Metas</div>`;
+  h+=`<div class="admin-grid">`;
+  h+=`<div class="admin-card"><div class="admin-card-title">📸 Meta IG — Semana Atual</div>
+    <div style="font-size:.82rem;color:var(--text2);line-height:1.8">
+    Seguidores: 5.000+<br>Posts: 2/dia + 3 Stories<br>Horários: 11h30 e 20h<br>Retenção Reels: >50%<br>Cliques bio: acompanhar</div></div>`;
+  h+=`<div class="admin-card"><div class="admin-card-title">🎵 Meta TK — Semana Atual</div>
+    <div style="font-size:.82rem;color:var(--text2);line-height:1.8">
+    Seguidores: 5.000+<br>Vídeos: 2/dia<br>Horários: 12h e 20h<br>Retenção 3s: >70%<br>"EU QUERO": acompanhar</div></div>`;
+  h+=`</div></div>`;
+
+  // Logout
+  h+=`<button class="admin-logout" onclick="localStorage.removeItem('mdg_user');location.reload()">🚪 Sair do painel</button>`;
+
+  h+=`</div>`; // close admin-wrapper
+
+  document.getElementById('content').innerHTML=h;
+
+  // Update header progress
+  document.getElementById('mainBar').style.width=totalPct+'%';
+  document.getElementById('mainText').textContent=`${totalDone} de ${totalKeys} tarefas • ${totalPct}% completo`;
+}
+
 function render(){
+  if(currentUser==='admin'){
+    renderAdmin();
+    return;
+  }
   renderDashboard();
   renderCharts();
   renderNav();
