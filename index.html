@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📅 Meu Direito Gestante — Calendário 30 Dias</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤰</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#09090b;--bg2:#111114;--card:#16161a;--card2:#1c1c22;--card-hover:#22222a;
+  --accent:#e879a0;--accent2:#c05882;--accent-glow:rgba(232,121,160,.15);
+  --green:#22c55e;--green-bg:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.25);
+  --yellow:#eab308;--yellow-bg:rgba(234,179,8,.1);--yellow-border:rgba(234,179,8,.25);
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,.1);
+  --purple:#a855f7;--purple-bg:rgba(168,85,247,.1);
+  --red:#ef4444;
+  --text:#f4f4f5;--text2:#a1a1aa;--text3:#71717a;
+  --border:#27272a;--border2:#3f3f46;
+  --radius:14px;--radius-sm:10px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ===== HEADER ===== */
+.header{background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:28px 20px 20px;text-align:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.header-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.header-brand h1{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f0abfc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header p{font-size:.82rem;color:var(--text3);font-weight:500}
+.header-progress{max-width:480px;margin:14px auto 0;position:relative}
+.header-progress-bar{background:var(--card);border-radius:20px;height:8px;overflow:hidden}
+.header-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#f0abfc,var(--accent));background-size:200% 100%;animation:shimmer 3s linear infinite;border-radius:20px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.header-progress-text{font-size:.72rem;color:var(--text3);margin-top:6px;font-weight:600}
+
+/* ===== DASHBOARD ===== */
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;max-width:900px;margin:16px auto;padding:0 16px}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;position:relative;overflow:hidden}
+.dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.dash-card.dc-total::before{background:linear-gradient(90deg,var(--accent),#f0abfc)}
+.dash-card.dc-reels::before{background:linear-gradient(90deg,var(--purple),#c084fc)}
+.dash-card.dc-done::before{background:linear-gradient(90deg,var(--green),#86efac)}
+.dash-card.dc-pct::before{background:linear-gradient(90deg,var(--blue),#93c5fd)}
+.dash-card.dc-phase::before{background:linear-gradient(90deg,var(--yellow),#fde68a)}
+.dash-emoji{font-size:1.4rem;margin-bottom:4px}
+.dash-num{font-size:1.6rem;font-weight:800;color:var(--text)}
+.dash-label{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-top:2px}
+
+/* ===== CHART SECTION ===== */
+.charts-section{max-width:900px;margin:20px auto;padding:0 16px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.chart-title{font-size:.85rem;font-weight:700;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.week-bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.week-bar{text-align:center}
+.week-bar-label{font-size:.7rem;color:var(--text3);font-weight:600;margin-bottom:6px}
+.week-bar-track{background:var(--bg);border-radius:8px;height:80px;position:relative;overflow:hidden;border:1px solid var(--border)}
+.week-bar-fill{position:absolute;bottom:0;left:0;right:0;border-radius:8px;transition:height .8s cubic-bezier(.4,0,.2,1)}
+.week-bar-pct{font-size:.75rem;font-weight:700;margin-top:6px;color:var(--text2)}
+.wb-1 .week-bar-fill{background:linear-gradient(0deg,rgba(168,85,247,.3),rgba(168,85,247,.6))}
+.wb-2 .week-bar-fill{background:linear-gradient(0deg,rgba(59,130,246,.3),rgba(59,130,246,.6))}
+.wb-3 .week-bar-fill{background:linear-gradient(0deg,rgba(234,179,8,.3),rgba(234,179,8,.6))}
+.wb-4 .week-bar-fill{background:linear-gradient(0deg,rgba(232,121,160,.3),rgba(232,121,160,.6))}
+.wb-5 .week-bar-fill{background:linear-gradient(0deg,rgba(34,197,94,.3),rgba(34,197,94,.6))}
+
+/* Mini day circles */
+.day-circles{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.day-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;cursor:pointer;transition:all .2s;border:2px solid var(--border)}
+.day-circle:hover{transform:scale(1.15)}
+.day-circle.dc-empty{color:var(--text3)}
+.day-circle.dc-partial{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-bg)}
+.day-circle.dc-complete{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+
+/* ===== NAV ===== */
+.nav{display:flex;gap:5px;padding:16px;overflow-x:auto;max-width:920px;margin:0 auto;-webkit-overflow-scrolling:touch;flex-wrap:wrap;justify-content:center}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text3);padding:7px 13px;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap;font-weight:600;font-family:inherit;display:flex;align-items:center;gap:4px}
+.nav-btn:hover{background:var(--card-hover);color:var(--text);border-color:var(--border2)}
+.nav-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
+.nav-btn.nav-complete{border-color:var(--green);color:var(--green)}
+.nav-btn.nav-partial{border-color:var(--yellow);color:var(--yellow)}
+.nav-btn .nav-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ===== CONTENT ===== */
+.container{max-width:800px;margin:0 auto;padding:0 16px 40px}
+
+/* Day Header */
+.day-head{text-align:center;margin-bottom:24px;padding:20px 0}
+.day-head-num{font-size:3.5rem;font-weight:900;background:linear-gradient(135deg,var(--accent),#f0abfc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.day-head-title{font-size:1.05rem;color:var(--text2);margin-top:4px;font-weight:500}
+.day-head-phase{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:10px}
+.phase-plantar{background:var(--purple-bg);color:#c084fc;border:1px solid rgba(168,85,247,.2)}
+.phase-crescer{background:var(--blue-bg);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.phase-escalar{background:var(--yellow-bg);color:#fde68a;border:1px solid rgba(234,179,8,.2)}
+.phase-consolidar{background:var(--accent-glow);color:#f0abfc;border:1px solid rgba(232,121,160,.2)}
+.phase-analisar{background:var(--green-bg);color:#86efac;border:1px solid rgba(34,197,94,.2)}
+
+/* Day mini progress */
+.day-mini-progress{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:12px}
+.day-ring{width:44px;height:44px;position:relative}
+.day-ring svg{transform:rotate(-90deg)}
+.day-ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:var(--text)}
+
+/* Alert */
+.alert{background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:.83rem;color:#fde68a;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.alert-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.alert-green{background:var(--green-bg);border-color:var(--green-border);color:#86efac}
+
+/* Post Card */
+.post-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px;transition:all .25s}
+.post-card:hover{border-color:var(--border2)}
+.post-card.all-done{border-color:var(--green);background:linear-gradient(135deg,var(--card),rgba(34,197,94,.03))}
+.post-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge-reel{background:var(--purple-bg);color:#c084fc;border:1px solid rgba(168,85,247,.15)}
+.badge-imagem{background:rgba(219,39,119,.1);color:#f472b6;border:1px solid rgba(219,39,119,.15)}
+.badge-story{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.15)}
+.badge-sponsor{background:rgba(250,204,21,.12);color:#facc15;border:1px solid rgba(250,204,21,.25)}
+.badge-analysis{background:var(--green-bg);color:#86efac;border:1px solid rgba(34,197,94,.15)}
+.post-time{font-size:.72rem;color:var(--text3);margin-left:auto;font-weight:600;background:var(--bg);padding:3px 8px;border-radius:6px}
+.post-title{font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--text)}
+
+/* Hook */
+.hook-box{background:linear-gradient(135deg,var(--accent-glow),rgba(240,171,252,.05));border:1px solid rgba(232,121,160,.2);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;font-weight:600;color:#f0abfc;font-size:.9rem;display:flex;align-items:flex-start;gap:8px}
+.hook-icon{font-size:1.1rem;flex-shrink:0}
+
+/* Fields */
+.field{margin-bottom:14px}
+.field-label{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;font-weight:700;display:flex;align-items:center;gap:5px}
+.field-value{font-size:.85rem;color:var(--text2);line-height:1.7}
+
+/* CTA */
+.cta-box{background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:12px 16px;margin-top:14px;font-size:.83rem;color:#86efac;display:flex;align-items:flex-start;gap:8px}
+.cta-icon{font-size:1rem;flex-shrink:0}
+
+/* Hashtags */
+.hashtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.htag{background:var(--accent-glow);color:var(--accent);padding:3px 8px;border-radius:6px;font-size:.68rem;font-weight:600}
+
+/* Checklist */
+.checklist{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.checklist-title{font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.check-item{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;-webkit-user-select:none;user-select:none;border-radius:8px;transition:all .15s;margin-bottom:2px}
+.check-item:hover{background:var(--card2)}
+.check-box{width:22px;height:22px;border:2px solid var(--border2);border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.check-item.done .check-box{background:var(--green);border-color:var(--green);animation:checkPop .3s ease}
+.check-item.done .check-box::after{content:"✓";color:#000;font-size:12px;font-weight:800}
+.check-item.done .check-label{text-decoration:line-through;color:var(--text3)}
+.check-label{font-size:.83rem;font-weight:500}
+@keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+
+/* Stories Section */
+.stories-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px}
+.stories-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.story-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:6px;transition:all .2s}
+.story-item.done{border-color:var(--green);background:rgba(34,197,94,.03)}
+
+/* Overview Grid */
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:16px}
+.ov-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.ov-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.3)}
+.ov-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);opacity:0;transition:opacity .2s}
+.ov-card:hover::after{opacity:1}
+.ov-day{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.ov-title{font-size:.88rem;font-weight:700;margin:6px 0;color:var(--text)}
+.ov-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.ov-bar{background:var(--bg);border-radius:10px;height:4px;overflow:hidden}
+.ov-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#f0abfc);border-radius:10px;transition:width .5s}
+.ov-pct{font-size:.65rem;color:var(--text3);font-weight:600;margin-top:4px;text-align:right}
+
+/* Rules */
+.rules-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px}
+.rules-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.rules-list{list-style:none}
+.rules-list li{padding:8px 0;font-size:.83rem;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.rules-list li:last-child{border:none}
+.rules-icon{flex-shrink:0;margin-top:2px}
+
+/* Analysis */
+.analysis-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px}
+.analysis-title{font-size:.95rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* Responsive */
+@media(max-width:600px){
+  .header-brand h1{font-size:1.2rem}
+  .dashboard{grid-template-columns:repeat(3,1fr);gap:8px}
+  .dash-num{font-size:1.2rem}
+  .day-head-num{font-size:2.5rem}
+  .nav{justify-content:flex-start;flex-wrap:nowrap}
+  .container{padding:0 12px 30px}
+  .post-card{padding:16px}
+  .overview-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <span style="font-size:1.6rem">🤰</span>
+    <h1>Meu Direito Gestante</h1>
+  </div>
+  <p>📅 Calendário 30 Dias — De Zero a Viral</p>
+  <div class="header-progress">
+    <div class="header-progress-bar"><div class="header-progress-fill" id="mainBar"></div></div>
+    <div class="header-progress-text" id="mainText">Carregando...</div>
+  </div>
+</div>
+
+<div class="dashboard" id="dashboard"></div>
+<div class="charts-section" id="chartsSection"></div>
+<nav class="nav" id="nav"></nav>
+<div class="container" id="content"></div>
+
+<script>
+// ============================================================
+// DATA — 30 DAYS
+// ============================================================
+const DAYS=[
+// DIA 0
+{day:0,title:"Lançamento 🚀",phase:"plantar",
+alert:"Postar os 3 primeiros de uma vez. O perfil precisa de pelo menos 3 posts ANTES de distribuir.",
+posts:[
+{type:"imagem",time:"11h",title:"Bebês reconhecem a voz da mãe 🍼",pin:true,
+hook:null,
+content:"Bebês reconhecem a voz da mãe dentro da barriga. E depois de nascer, entre 10 vozes, eles viram o rosto pra sua. Você é a pessoa mais importante do mundo pra alguém que nem nasceu ainda. ❤️",
+cta:"Se você tá grávida ou já é mãe, esse perfil é pra você. Segue a gente.",
+visual:"Imagem 1080x1350, fundo bege suave, texto centralizado fonte serifada. Logo no rodapé.",
+audio:null,
+tasks:["Criar imagem no Canva (1080x1350)","Escrever legenda","Postar às 11h e FIXAR NO TOPO"]},
+{type:"reel",time:"11h",title:"Estômago do recém-nascido 🍒",
+hook:"O estômago de um recém-nascido tem o tamanho de...",
+content:"Cereja → noz → damasco → ovo. Cada fruta = primeiros dias de vida. 'Por isso eles mamam tantas vezes. O estômago é minúsculo!'",
+cta:"Salva pra lembrar quando o bebê nascer 🍒",
+visual:"7-10 seg. Fundo clean, frutas com ml. Transição rápida.",
+audio:"🎵 Trending audio suave",
+tasks:["Filmar/montar Reel com frutas","Texto na tela + legenda","Postar às 11h"]},
+{type:"reel",time:"20h",title:"5 coisas que o bebê faz na barriga 👶",
+hook:"Seu bebê já faz isso AGORA dentro da barriga...",
+content:"Soluça (você sente!) → Sonha (28 semanas) → Ouve sua voz → Chupa o dedo → Sorri (flagraram no 4D)",
+cta:"Qual você não sabia? Comenta o número!",
+visual:"12-15 seg. Texto rápido com transição. Fundo escuro, destaque rosa.",
+audio:"🎵 Trending emocional",
+tasks:["Montar Reel texto animado","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Qual trimestre? 1º / 2º / 3º / Já nasceu'","💓 'O coração do bebê bate 150x/min — o dobro do seu'","🆕 'Perfil novo! O que vocês querem ver aqui?'"]},
+
+// DIA 1
+{day:1,title:"Curiosidade + Emoção 💖",phase:"plantar",
+posts:[
+{type:"reel",time:"11h30",title:"300 ossos ao nascer 🦴",
+hook:"Se você tá grávida, para e olha isso",
+content:"Bebês nascem com 300 ossos. Adultos têm 206. Os ossos vão se fundindo ao longo da vida.",
+cta:"Manda pra uma grávida que ia achar incrível",
+visual:"7-10 seg. Texto grande animado, fundo bege, pé de bebê.",
+audio:"🎵 Curiosidade trending",
+tasks:["Montar Reel texto animado","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"O segredo mais bonito 🤫",
+hook:"Só quem é mãe sabe o que é isso...",
+content:"A primeira vez que sente o bebê mexer, o mundo para por 3 segundos. É só vocês dois. Ninguém mais sente. É o segredo mais bonito que você já guardou.",
+cta:"Marca uma mãe que sabe essa sensação ❤️",
+visual:"10 seg. Tela escura, texto surgindo devagar. Tom ASMR.",
+audio:"🎵 Batimento cardíaco suave",
+tasks:["Montar Reel emocional","Postar às 20h"]}
+],
+stories:["🩸 'Grávidas produzem 50% mais sangue na gestação'","📊 Enquete: 'Já sentiu mexer? Sim / Esperando ansiosa'","🔄 Repost Reel emocional + 'Marca ela 👇'"]},
+
+// DIA 2
+{day:2,title:"Humor + Identificação 😂",phase:"plantar",
+posts:[
+{type:"reel",time:"11h30",title:"ISSO É NORMAL? Pesquisas de grávida 🔍",
+hook:"ISSO É NORMAL? 6 coisas que toda grávida pesquisa",
+content:"Dor na virilha ✅ → Corrimento claro ✅ → Barriga dura ✅ → Chorar sem motivo ✅ → Nariz entupido ✅ → Gengiva sangrando ✅",
+cta:"Quantas você pesquisou? Comenta o número 😂",
+visual:"12-15 seg. Simular pesquisa, check verde em cada resposta.",
+audio:"🎵 Trending animado",
+tasks:["Montar Reel tipo Google","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Xixi no 3º trimestre 🚽",
+hook:"Ninguém te conta que...",
+content:"...no terceiro trimestre você faz xixi 47 vezes por dia. E toda vez que espirra... já sabe 😂",
+cta:"Marca uma grávida que vai se identificar",
+visual:"7-10 seg. Humor com fundo neutro.",
+audio:"🎵 Trending humor",
+tasks:["Montar Reel humorístico","Postar às 20h"]}
+],
+stories:["🧬 'Bebê tem impressão digital com 3 meses de gestação'","📊 Enquete: 'Pior: enjoo do 1º tri ou azia do 3º?'","💡 Dica: 'Travesseiro entre as pernas = vida nova'"]},
+
+// DIA 3
+{day:3,title:"3º Trimestre + Ciência 🧠",phase:"plantar",
+alert:"🔥 A partir de hoje: postar nos GRUPOS de grávidas (1/grupo/dia). Conteúdo direto, NÃO link.",
+posts:[
+{type:"reel",time:"11h30",title:"Verdades do 3º trimestre 😅",
+hook:"O que NINGUÉM te fala sobre o terceiro trimestre",
+content:"Não amarra sapato → Virar na cama é projeto → Azia 24h → Xixi a cada 20min → Mas quando ele mexe, tudo vale a pena",
+cta:"Se tá no terceiro, me desculpa 😂 Comenta!",
+visual:"10-15 seg. Lista rápida surgindo.",
+audio:"🎵 Trending de lista",
+tasks:["Montar Reel lista rápida","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Cérebro DOBRA de tamanho 🧠",
+hook:"Isso vai mudar como você olha pro seu bebê",
+content:"O cérebro DOBRA nos primeiros 90 dias. Falar, tocar, olhar nos olhos = milhões de conexões. Você é a arquiteta do cérebro do seu filho.",
+cta:"Salva esse Reel 💜",
+visual:"12 seg. Texto impactante, destaque em DOBRA.",
+audio:"🎵 Inspiracional trending",
+tasks:["Montar Reel educativo","Postar às 20h"]}
+],
+stories:["🔄 Repost Reel 3º trimestre","👀 'Bebês piscam 3x/min. Adultos 15x'","📊 Enquete: 'Montou enxoval? Sim / Ainda não'"]},
+
+// DIA 4
+{day:4,title:"Humor Comparativo + ASMR 🎧",phase:"plantar",
+posts:[
+{type:"reel",time:"11h30",title:"Mãe 1990 vs 2026 📱",
+hook:"Ser mãe em 1990 vs ser mãe em 2026",
+content:"Carrinho tanque vs dobrável → Fralda pano vs sensor xixi → 'Minha mãe disse' vs 47 abas Google → Chá bolo+refri vs decoração R$3k → 1 foto revelada vs 847/dia",
+cta:"Qual era melhor? Comenta 1990 ou 2026 😂",
+visual:"12-15 seg. Split screen sépia vs moderno.",
+audio:"🎵 Trending transição",
+tasks:["Montar Reel split screen","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Batimento cardíaco ASMR 💓",
+hook:"[ASMR] Tela preta. Som alto de batimento fetal.",
+content:"Tela escura → áudio batimento → '150 bpm. O som mais bonito que você já ouviu.' → Revela ultrassom",
+cta:"Marca quem já chorou nessa hora ❤️",
+visual:"10 seg. Minimalista. Pattern interrupt forte.",
+audio:"🔊 Som real de ultrassom",
+tasks:["Montar Reel ASMR emocional","Postar às 20h"]}
+],
+stories:["📊 Enquete: '1990 ou 2026?'","🎵 'Bebês reconhecem músicas da barriga'","📊 Enquete: 'Nome do bebê: escolheu? Sim / Não'"]},
+
+// DIA 5
+{day:5,title:"Google + Validação ❤️",phase:"plantar",
+alert:"📊 AVALIAR: qual post mais engajou? Impulsionar melhor com R$10.",
+posts:[
+{type:"reel",time:"11h30",title:"Histórico Google de grávida 🔍",
+hook:"O histórico de pesquisa de uma grávida:",
+content:"'dor 12 semanas normal?' → 'sushi grávida?' → 'bebê ouve quando?' → 'menino ou menina?' → 'pintar cabelo grávida?' → 'contração treinamento?' → 'QUANTAS SEMANAS ESTOU?'",
+cta:"Quantas pesquisou? 😂",
+visual:"12-15 seg. Tela celular, digitando rápido.",
+audio:"🎵 Trending animado",
+tasks:["Montar Reel pesquisas Google","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Você já é boa mãe 💜",
+hook:"Se tá grávida e leu isso, era pra você ver",
+content:"Tem dias mágicos. Dias exaustivos. Dias que é os dois. Tudo normal. Não precisa estar feliz 100% pra ser boa mãe. Você já é.",
+cta:"Manda pra uma grávida que precisa ouvir 💜",
+visual:"12 seg. Texto devagar, fundo pastel.",
+audio:"🎵 Piano suave",
+tasks:["Montar Reel validação","Postar às 20h"]}
+],
+stories:["🥛 'Colostro = ouro líquido, tem todos os anticorpos'","📊 Enquete: 'Maior medo: parto ou noites sem dormir?'","🔄 Repost Reel emocional"]},
+
+// DIA 6
+{day:6,title:"Frutas + Enxoval 🍌",phase:"plantar",
+posts:[
+{type:"reel",time:"11h30",title:"Qual fruta você é? 🍉",
+hook:"Em qual fruta você tá?",
+content:"8sem=framboesa 💓 → 12sem=limão ✋ → 16sem=abacate 👂 → 20sem=banana 🎀 → 28sem=berinjela 👁️ → 36sem=mamão 🏁 → 40sem=melancia 🎉",
+cta:"Comenta qual fruta você tá! 🍋🍌🍆",
+visual:"15 seg. Frutas surgindo com semana. Colorido.",
+audio:"🎵 Trending animado",
+tasks:["Montar Reel frutas + semanas","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Enxoval vicia 🛍️",
+hook:"Ninguém te conta que...",
+content:"...montar enxoval vicia mais que rede social. Entra 'só pra olhar', sai com 14 bodies, 8 mantas e berço mais caro que aluguel.",
+cta:"Marca mãe que não para de comprar 😂",
+visual:"7-10 seg. Humor rápido.",
+audio:"🎵 Trending compras",
+tasks:["Montar Reel humor enxoval","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Qual fruta? 🍋🍌🍆🍉'","😴 'Recém-nascido dorme 16-17h/dia (nunca quando você quer)'","❓ 'O que mais quer saber sobre gestação?'"]},
+
+// DIA 7
+{day:7,title:"Pet + Saúde Pública 🐾",phase:"plantar",
+alert:"📊 REVISAR SEMANA 1: formato, horário, seguidores, compartilhamentos. Ajustar semana 2.",
+posts:[
+{type:"reel",time:"11h30",title:"Seu pet sabe que você tá grávida 🐶",
+hook:"Se tem gato/cachorro e tá grávida, olha isso",
+content:"Bebês com pets = imunidade mais forte e menos alergias. Animais percebem gravidez antes da mãe — pelo cheiro.",
+cta:"Seu pet mudou quando engravidou? Conta!",
+visual:"10-15 seg. Fotos pets + grávidas. Texto.",
+audio:"🎵 Trending fofo",
+tasks:["Montar Reel pets","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Teste do pezinho ampliado 🏥",
+hook:"Toda mãe precisa saber ANTES do bebê nascer",
+content:"Teste do pezinho ampliado: 50+ doenças, disponível no SUS. Todo recém-nascido tem direito. Fazer entre 3 e 5 dias de vida.",
+cta:"Salva e compartilha pra toda mãe saber 🧡",
+visual:"10 seg. Estilo notícia urgente, headline grande.",
+audio:"🎵 Trending informativo",
+tasks:["Montar Reel urgente informativo","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Sabia do teste ampliado? Sim / Não'","👃 'Olfato do bebê é 10x mais sensível'","🏆 Repost do post que mais bombou: 'Obrigada 💜'"]},
+
+// DIA 8
+{day:8,title:"Sinais de Parto + Humor 👀",phase:"crescer",
+posts:[
+{type:"reel",time:"11h30",title:"7 sinais: bebê chegando 🚨",
+hook:"7 sinais de que o bebê tá chegando",
+content:"Barriga desce → Tampão sai → Contrações regulares → Dor costas constante → Diarreia → Instinto ninho → Intuição: você sabe.",
+cta:"Salva. Vai precisar 📌",
+visual:"15 seg. Texto rápido com números.",
+audio:"🎵 Trending urgente",
+tasks:["Montar Reel lista urgente","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Marido 1º tri vs 3º tri 😂",
+hook:"Marido de grávida: 1º tri vs 3º tri",
+content:"1º: 'Amor, quer massagem?' → 3º: *dormindo no sofá enquanto ela não levanta*",
+cta:"Marca o pai 😂",
+visual:"7-10 seg. POV/meme transição.",
+audio:"🎵 Trending humor",
+tasks:["Montar Reel transição","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Mais medo: normal ou cesárea?'","📦 Dica: 'Bolsa maternidade: começar com 32 semanas'","🔄 Repost sinais de parto"]},
+
+// DIA 9
+{day:9,title:"Frases + Empoderamento 💪",phase:"crescer",
+posts:[
+{type:"reel",time:"11h30",title:"Frases que grávida ouve sem pedir 🙄",
+hook:"3 coisas que falam pra grávida e NINGUÉM pediu",
+content:"1. 'Aproveita pra dormir' (estocar sono?) → 2. 'Tá grande hein!' (obrigada) → 3. 'Quando EU tava grávida...'",
+cta:"Qual mais ouve? Comenta 1, 2 ou 3 😂",
+visual:"10 seg. Texto + expressão desespero.",
+audio:"🎵 Trending irritação cômica",
+tasks:["Montar Reel humor","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Não existe mãe perfeita 💜",
+hook:"Pra você que tá se cobrando demais",
+content:"Não existe perfeita. Existe presente. Que tenta. Que chora escondido e limpa o rosto. Que duvida toda noite e faz tudo de novo. Essa mãe? É você. Tá arrasando.",
+cta:"Compartilha se concorda 💜",
+visual:"15 seg. Texto devagar, 'você' em rosa.",
+audio:"🎵 Piano emocional",
+tasks:["Montar Reel empoderamento","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Mais chata: Aproveita pra dormir / Tá grande hein'","📝 Caixinha: 'Frase que mais irrita'","🔄 Repost emocional"]},
+
+// DIA 10
+{day:10,title:"⚡ DIREITOS — Aquecimento",phase:"crescer",
+alert:"POST DE AQUECIMENTO. Menciona benefícios como DIREITO, não venda. IMPULSIONAR R$10-20.",
+posts:[
+{type:"reel",time:"11h30",title:"Direitos que NINGUÉM fala ⚖️",sponsor:true,
+hook:"Grávida, você sabia que tem ESSES direitos?",
+content:"Estabilidade emprego → Consultas no trabalho → Troca função risco → 120 dias licença → SALÁRIO-MATERNIDADE INSS (SEM CARTEIRA!) → Prioridade filas → Assento preferencial",
+cta:"Quantos não sabia? Salva e compartilha!",
+visual:"15 seg. Cada direito com ícone. DESTAQUE salário-maternidade.",
+audio:"🎵 Trending empoderador",
+tasks:["Montar Reel direitos","IMPULSIONAR R$10-20","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Só entende depois de engravidar 🤰",
+hook:"Coisas que SÓ entende depois de engravidar",
+content:"O que é 'rápido' pro banheiro → 9 meses é muito E pouco → Corpo faz coisas impossíveis → Amor começa antes de nascer",
+cta:"Adiciona mais uma nos comentários!",
+visual:"10-12 seg. Texto rápido.",
+audio:"🎵 Trending relatable",
+tasks:["Montar Reel identificação","Postar às 20h"]}
+],
+stories:["🔄 Repost direitos: 'SALVA e manda pra grávida'","📊 Enquete: 'Sabia do salário sem carteira? Sim / Não!'","📝 Caixinha: 'Qual direito não sabia?'"]},
+
+// DIA 11
+{day:11,title:"POV + Educativo 🎬",phase:"crescer",
+posts:[
+{type:"reel",time:"11h30",title:"38 semanas no mercado 🛒",
+hook:"POV: 38 semanas e contração no supermercado",
+content:"Olha carrinho cheio → olha barriga → respira → continua empurrando",
+cta:"Quem já passou? 😂",
+visual:"7-10 seg. POV frontal, expressões exageradas.",
+audio:"🎵 Trending cômico",
+tasks:["Montar Reel POV humor","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Estômago minúsculo 🍒",
+hook:"Se seu bebê mama toda hora, assiste",
+content:"Dia 1: cereja 5-7ml → Dia 3: noz 22-27ml → Dia 7: damasco 45-60ml → 1 mês: ovo 80-150ml. Não se culpe.",
+cta:"Salva e manda pra quem precisa ❤️",
+visual:"12 seg. Frutas + ml. Educativo.",
+audio:"🎵 Trending suave",
+tasks:["Montar Reel educativo","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Contração em público? Sim / Ainda não'","🍼 'Leite materno muda composição conforme bebê cresce'","🔄 Repost estômago"]},
+
+// DIA 12
+{day:12,title:"Bolsa do Bebê + Ciência 🧬",phase:"crescer",
+posts:[
+{type:"reel",time:"11h30",title:"Bolsa pra 2h de passeio 🎒",
+hook:"A bolsa do bebê pra sair pela primeira vez:",
+content:"4 trocas → 12 fraldas (pra 2h!) → lenço → pomada → 3 mantinhas → 2 chupetas → 'E meu celular e chave'",
+cta:"Primeira saída = mudança de casa 😂",
+visual:"10-15 seg. Itens empilhados. Humor visual.",
+audio:"🎵 Trending animado",
+tasks:["Montar Reel itens","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Seu corpo cria um ÓRGÃO NOVO 🤯",
+hook:"O corpo feminino faz algo de ficção científica",
+content:"Grávida = corpo cria ÓRGÃO NOVO do zero: placenta. Nutre, protege, filtra. Depois descarta como se nada. O corpo feminino é absurdo.",
+cta:"Compartilha se não sabia 🤯",
+visual:"12 seg. Destaque ÓRGÃO NOVO.",
+audio:"🎵 Revelação/surpresa",
+tasks:["Montar Reel ciência","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Primeira saída: mochila ou bolsa?'","🧬 'Placenta produz 15+ hormônios'","💡 Dica: 'Leve troca PRA VOCÊ também'"]},
+
+// DIA 13
+{day:13,title:"Mala Maternidade + Empatia 🎒",phase:"crescer",
+posts:[
+{type:"reel",time:"11h30",title:"Mala: o que REALMENTE precisa ✅",
+hook:"Mala maternidade: o que REALMENTE precisa",
+content:"MÃE: camisola, chinelo, absorvente, carregador, docs → BEBÊ: 3 bodies, 3 macacões, 2 mantas, gorro, meias, fraldas RN → NÃO: 15 trocas, maquiagem, secador",
+cta:"Salva e marca quem tá montando 🎒",
+visual:"15 seg. Dividido: MÃE/BEBÊ/NÃO.",
+audio:"🎵 Trending checklist",
+tasks:["Montar Reel checklist mala","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Ninguém pergunta como VOCÊ está 😢",
+hook:"Ninguém te conta que...",
+content:"...quando nasce, todo mundo quer pegar, visitar, opinar. Mas ninguém pergunta se você comeu. Se VOCÊ está bem. 'Pergunte pra mãe como ela está. ❤️'",
+cta:"Marca alguém que precisa ver",
+visual:"12-15 seg. Texto devagar, final impactante.",
+audio:"🎵 Piano emocional",
+tasks:["Montar Reel emocional mãe","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Montou mala? Sim / Falta'","📱 Dica: 'Item esquecido: CARREGADOR'","🔄 Repost emocional"]},
+
+// DIA 14
+{day:14,title:"Evolução + Fechamento 🎯",phase:"crescer",
+posts:[
+{type:"reel",time:"11h30",title:"Pesquisas evoluindo 📈",
+hook:"Evolução das pesquisas de grávida",
+content:"1º tri: 'posso comer?' → 2º tri: 'quando mexe?' 'nome bonito' → 3º tri: 'contração verdadeira?' 'COMO FAZER SAIR'",
+cta:"Qual fase? 😂😂",
+visual:"10-12 seg. Pesquisas cada vez mais desesperadas.",
+audio:"🎵 Trending escalada",
+tasks:["Montar Reel evolução","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Obrigada — 14 dias 💜",
+hook:"Pra você que tá aqui desde o começo",
+content:"Há 14 dias não existia. Hoje você tá aqui, mão na barriga ou bebê no colo. Obrigada. Esse perfil é pra rir, chorar, se informar e saber que não tá sozinha. 💜",
+cta:"Compartilha nos stories. Ajuda mais mães!",
+visual:"15 seg. Fundo escuro, simples, emocional.",
+audio:"🎵 Emocional trending",
+tasks:["Montar Reel agradecimento","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Favorito? Curiosidade / Humor / Direitos / Frases'","🙏 'Obrigada por 2 semanas!'","🔄 Repost fechamento"]},
+
+// DIA 15 — ANÁLISE
+{day:15,title:"📊 ANÁLISE — Semana 1+2",phase:"analisar",
+alert:"Dia de ANALISAR. NÃO postar conteúdo novo.",
+posts:[],
+analysis:{
+metrics:["📈 Total de seguidores conquistados","👁️ Post com mais alcance","💬 Post com mais comentários","🔄 Post com mais compartilhamentos","📌 Post com mais salvamentos","🎬 Reels: curto vs longo — qual performou","⏰ Melhor horário (11h30 vs 20h)","🎣 Hook vencedor (humor vs emoção vs curiosidade)","🔗 Cliques no link da bio","📊 Retenção média dos Reels"],
+decisions:["🎯 Formato para dobrar na semana 3","✂️ Tipo de conteúdo para cortar","⏰ Ajustar horários se necessário","💰 Orçamento de impulsionamento semana 3","📌 Trocar post fixado se teve melhor","👥 Melhores grupos de Facebook"]},
+stories:[]},
+
+// DIA 16
+{day:16,title:"Confissões de Grávida 🤫",phase:"escalar",
+posts:[
+{type:"reel",time:"11h30",title:"Coisas que faz escondido 🙈",
+hook:"Coisas que toda grávida faz e finge que não",
+content:"Cheira roupinha antes de nascer → Chora em propaganda de fralda → Fala com barriga sozinha → Pesquisa nome às 3h → Come escondido pra não dividir",
+cta:"Qual você faz? Confessa 😂",
+visual:"10-12 seg. Expressão 'pega no flagra'. Humor.",
+audio:"🎵 Trending divertido",
+tasks:["Montar Reel confissões","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"O primeiro choro 👶",
+hook:"O som que muda tudo dura 1 segundo",
+content:"Tela preta → som primeiro choro → 'Nesse segundo, você deixa de ser mulher e vira mãe. Nada é igual.'",
+cta:"Marca mãe que lembra ❤️",
+visual:"10 seg. ASMR emocional. Tela preta + áudio + texto.",
+audio:"🔊 Som real de primeiro choro",
+tasks:["Montar Reel primeiro choro","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Faz escondido? Cheira roupa / Fala com barriga'","🔥 'Voltamos! Semana 3 ainda melhor'","🔄 Repost emocional"]},
+
+// DIA 17
+{day:17,title:"Comida + Sonhos do Bebê 🍕",phase:"escalar",
+posts:[
+{type:"reel",time:"11h30",title:"Grávida vs Comida ⏰",
+hook:"A relação de uma grávida com comida:",
+content:"6h: não como nada → 9h: quero TUDO → 12h: cheiro de peixe = vômito → 15h: CHOCOLATE AGORA → 21h: pizza+sorvete faz sentido → 3h: *geladeira no escuro*",
+cta:"Qual horário é você? 😂",
+visual:"12 seg. Horários surgindo rápido.",
+audio:"🎵 Trending rotina",
+tasks:["Montar Reel rotina alimentar","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Seu bebê sonha com você 💭",
+hook:"Com 28 semanas, seu bebê já sonha",
+content:"Sono REM no útero. O único mundo que conhece: seu corpo, sua voz, seu coração. Seu bebê já sonha com você antes de te conhecer.",
+cta:"Salva pra quando precisar sorrir 💜",
+visual:"12 seg. Texto suave, fundo escuro.",
+audio:"🎵 Música de ninar",
+tasks:["Montar Reel sonho bebê","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Desejo: doce+salgado / azedo / comida odiava'","💭 'Com 28 semanas o bebê já sonha 🥹'","📝 Caixinha: 'Desejo mais aleatório?'"]},
+
+// DIA 18
+{day:18,title:"Expectativa vs Realidade 🎭",phase:"escalar",
+posts:[
+{type:"reel",time:"11h30",title:"Parto: expectativa vs realidade 😅",
+hook:"Expectativa vs Realidade do parto",
+content:"Playlist montada → esqueceu fone → 'Vou ser zen' → gritou com todos → Foto linda → esqueceu celular → Chorar delicado → chorou+gritou+riu tudo junto",
+cta:"Conta como foi o seu! 😂",
+visual:"12-15 seg. Split expectativa (estético) vs realidade (caos).",
+audio:"🎵 Trending exp vs real",
+tasks:["Montar Reel expectativa vs realidade","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Você tem um superpoder 💪",
+hook:"Você tem um superpoder e não sabe",
+content:"Seu corpo cria OSSOS, ÓRGÃOS, CÉREBRO e CORAÇÃO. Literalmente construindo vida enquanto responde WhatsApp. Isso é extraordinário.",
+cta:"Compartilha pra toda grávida ser a heroína que é 💪",
+visual:"15 seg. Texto crescendo. Empoderador.",
+audio:"🎵 Áudio épico",
+tasks:["Montar Reel superpoder","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Parto saiu como planejou? Sim / Nem perto 😂'","🦸‍♀️ 'Você constrói vida. Descansa sem culpa.'","🔄 Repost superpoder"]},
+
+// DIA 19
+{day:19,title:"Manual do Pai + Carta 💌",phase:"escalar",
+posts:[
+{type:"reel",time:"11h30",title:"Manual: marido de grávida 📋",
+hook:"Manual de sobrevivência: marido de grávida",
+content:"Regra 1: Não comente tamanho → 2: Sempre tenha comida → 3: 'Tá linda' = resposta pra TUDO → 4: Massagem nos pés = paz mundial → 5: Se chorou, ABRACE, não pergunte",
+cta:"Marca o pai que precisa 😂",
+visual:"12 seg. Formato manual/lista.",
+audio:"🎵 Trending engraçado",
+tasks:["Montar Reel manual","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Carta pro bebê 💌",
+hook:"Se pudesse escrever pro meu bebê agora...",
+content:"Você ainda não nasceu mas já mudou tudo. Já mudou quem eu sou. Ainda não vi seu rosto mas te amo de um jeito que não cabe em palavras. Vem quando quiser. Já tô pronta. (mentira, mas vem) 💜",
+cta:"Marca grávida que se identificou ❤️",
+visual:"15 seg. Texto como escrito à mão. Emocional forte.",
+audio:"🎵 Piano + heartbeat",
+tasks:["Montar Reel carta","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Parceiro segue manual? Segue / Precisa aprender'","💌 'Se pudesse dizer algo pro bebê?'","🔄 Repost carta"]},
+
+// DIA 20
+{day:20,title:"Níveis de Cansaço + Apoio 😴",phase:"escalar",
+posts:[
+{type:"reel",time:"11h30",title:"5 níveis de cansaço 🔋",
+hook:"Os 5 níveis de cansaço de grávida",
+content:"Nível 1: 'Um pouco cansada' → 2: 'Sentar 5min' → 3: 'Cochilei às 14h' → 4: 'Dormi no ônibus' → 5: 'Chão do mercado pareceu razoável'",
+cta:"Qual nível hoje? 😂",
+visual:"10-12 seg. Barra de progresso subindo.",
+audio:"🎵 Trending game/level up",
+tasks:["Montar Reel níveis","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Não precisa de opinião 🛑",
+hook:"Pra toda grávida recebendo opinião demais",
+content:"Não precisa que digam como criar. Não precisa de palpite. Precisa de: 'Tô aqui. No que precisar.' Só isso.",
+cta:"Marca quem te apoia de verdade 💜",
+visual:"12 seg. Texto direto, empoderador.",
+audio:"🎵 Empoderador",
+tasks:["Montar Reel empoderamento","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Nível hoje? 1-2 / 3-4 / NÍVEL 5 😴'","💡 'Não peça opinião. Peça apoio.'","📝 Caixinha: 'Melhor conselho na gravidez?'"]},
+
+// DIA 21
+{day:21,title:"App + Amor Inexplicável 💜",phase:"escalar",
+posts:[
+{type:"reel",time:"11h30",title:"App de gestação às 3h 📱",
+hook:"Grávida no app às 3h da manhã:",
+content:"'Bebê tamanho de coco' → *olha pro coco no mercado* → 'Bebê pisca' → *chorando* → 'Pode ter soluço' → *cutuca barriga* → 'Faltam 56 dias' → *surta*",
+cta:"Quem abre o app toda noite? 😂",
+visual:"12 seg. App + reações. Humor.",
+audio:"🎵 Trending madrugada",
+tasks:["Montar Reel app gestação","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"O amor que não se explica ❤️",
+hook:"Tem um amor que ninguém explica",
+content:"Amor por alguém que nunca viu. Que nunca disse nada. Que só existe porque você existe. Que veio antes do primeiro olhar. Se é mãe, sabe do que eu falo.",
+cta:"Salva se sentiu isso ❤️",
+visual:"15 seg. Texto lento, emocional profundo.",
+audio:"🎵 Violino/piano",
+tasks:["Montar Reel amor","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'App: todo dia / toda hora / de madrugada'","💜 'Amor mais puro começa antes do encontro'","🔄 Repost emocional"]},
+
+// DIA 22
+{day:22,title:"Espelho + Gratidão 🪞",phase:"escalar",
+alert:"📊 AVALIAR SEMANA 3. Comparar com 1 e 2. Crescimento acelerou?",
+posts:[
+{type:"reel",time:"11h30",title:"Grávida no espelho por trimestre 🪞",
+hook:"Grávida no espelho em cada trimestre",
+content:"1º: 'Cadê barriga? Ninguém acredita' → 2º: 'Ai que linda barriguinha! Amando!' → 3º: 'EU SOU A BARRIGA. Não existe eu, só barriga.'",
+cta:"Qual fase? 😂",
+visual:"10 seg. Transição espelho. Humor.",
+audio:"🎵 Trending transformação",
+tasks:["Montar Reel espelho","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Obrigada, corpo 🙏",
+hook:"Uma mensagem pro seu corpo",
+content:"Obrigada pelo enjoo. Pelas noites sem dormir. Pelas estrias que contam história. Por se transformar pra dar vida. Você é incrível mesmo quando não sente.",
+cta:"Compartilha se concordou 💜",
+visual:"15 seg. Texto carta. Fundo suave.",
+audio:"🎵 Gratidão emocional",
+tasks:["Montar Reel gratidão","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Melhor trimestre: 1º / 2º / 3º?'","🙏 'Seu corpo tá incrível. Descansa.'","🔄 Repost gratidão"]},
+
+// DIA 23
+{day:23,title:"Trânsito + Sons 🚗",phase:"consolidar",
+posts:[
+{type:"reel",time:"11h30",title:"Grávida dirigindo vs passageira 🚗",
+hook:"Grávida dirigindo vs de passageira",
+content:"Dirigindo: 'Calma, devagar' → Passageira: 'FREIA! CUIDADO! PERTO DEMAIS!' *mão na barriga*",
+cta:"Marca grávida que dirige assim 😂",
+visual:"7-10 seg. POV transição. Humor.",
+audio:"🎵 Trending pânico cômico",
+tasks:["Montar Reel trânsito","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"O que o bebê ouve lá dentro 🎵",
+hook:"O que seu bebê escuta de dentro da barriga",
+content:"Coração batendo 💓 → Sua voz (favorita) → Estômago (sim, digestão 😂) → Música → Voz do pai → Tudo filtrado como debaixo d'água",
+cta:"Coloca música pro bebê e comenta qual 🎵",
+visual:"12 seg. Ondas sonoras. Efeito.",
+audio:"🔊 Som intrauterino + heartbeat",
+tasks:["Montar Reel sons","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Dirige grávida? Normal / Alerta máximo'","🎵 'Bebê já tem playlist favorita: a sua'","📝 Caixinha: 'Que música coloca pro bebê?'"]},
+
+// DIA 24
+{day:24,title:"Mentiras + Comparação 🤥",phase:"consolidar",
+posts:[
+{type:"reel",time:"11h30",title:"5 mentiras que contam 🤥",
+hook:"5 mentiras que todo mundo conta pra grávida",
+content:"1. 'É a melhor fase' (enjoo?) → 2. 'Depois piora' (obrigada) → 3. 'É só dorzinha' (nunca pariu) → 4. 'Eu não engordei' (tá bom, Karen) → 5. 'Vai ser moleza' (NADA É)",
+cta:"Qual mais te contaram? 😂",
+visual:"10-12 seg. Expressão irônica.",
+audio:"🎵 Trending mentira/verdade",
+tasks:["Montar Reel mentiras","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"1ª viagem vs 2ª viagem 👶👶",
+hook:"Mãe de 1ª viagem vs de 2ª",
+content:"1ª: esteriliza TUDO → 2ª: caiu? assopra → 1ª: 200 fotos/dia → 2ª: 'cadê foto do mês 3?' → 1ª: mala 3 semanas antes → 2ª: arruma na hora",
+cta:"Qual é você? Marca mãe 😂",
+visual:"10 seg. Comparação humor.",
+audio:"🎵 Trending comparação",
+tasks:["Montar Reel comparação","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Maior mentira: Dorzinha / Vai ser moleza'","😂 'Se falaram que é fácil, manda esse Reel'","🔄 Repost comparação"]},
+
+// DIA 25
+{day:25,title:"⚡ DIREITOS 2 — Desempregada",phase:"consolidar",
+alert:"Segundo post de aquecimento sobre direitos. IMPULSIONAR R$15-20.",
+posts:[
+{type:"reel",time:"11h30",title:"Desempregada TEM direito ⚖️",sponsor:true,
+hook:"Grávida desempregada: PARA e assiste",
+content:"Sem carteira ≠ sem direito. INSS paga pra: desempregada, autônoma, MEI, dona de casa. Até quem nunca contribuiu pode ter. Não deixe dizerem que não tem direito.",
+cta:"Salva e manda pra toda grávida!",
+visual:"15 seg. Urgente, fundo escuro, destaque rosa. Loss aversion.",
+audio:"🎵 Trending empoderador",
+tasks:["Montar Reel direitos desempregada","IMPULSIONAR R$15-20","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Verdade sobre amamentação 🤱",
+hook:"Sobre amamentação: o que ninguém fala",
+content:"Não é instintivo, estão aprendendo → Pode doer (não é frescura) → Seu leite É suficiente → Pedir ajuda ≠ fraqueza → Se não conseguir, tá bem → Boa mãe de qualquer jeito",
+cta:"Manda pra grávida que precisa ❤️",
+visual:"15 seg. Empático, acolhedor.",
+audio:"🎵 Suave emocional",
+tasks:["Montar Reel amamentação","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Sabia que desempregada tem direito? Sim / Não!'","🤱 'Amamentar é lindo mas difícil. Tá bem pedir ajuda.'","🔄 Repost direitos"]},
+
+// DIA 26
+{day:26,title:"Tipos de Grávida + Escolha 💫",phase:"consolidar",
+posts:[
+{type:"reel",time:"11h30",title:"Tipos no grupo WhatsApp 📱",
+hook:"Tipos de grávida no grupo do WhatsApp",
+content:"A pesquisadora: 'Gente, li que...' → A ansiosa: 'É normal? É normal?' → A zen: 'Tô fluindo' → A que manda teste toda semana → A que só manda figurinha",
+cta:"Qual é você? Marca amiga 😂",
+visual:"10-12 seg. Cada tipo com emoji.",
+audio:"🎵 Trending tipos",
+tasks:["Montar Reel tipos","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Seu bebê te escolheu 💫",
+hook:"Você já pensou que seu bebê te escolheu?",
+content:"De todas as mães, ele cresce em VOCÊ. Ouve SUA voz. Sente SEU coração. Conhece SEU cheiro. Nem nasceu e você já é o mundo inteiro. Ele te escolheu.",
+cta:"Salva pra ler quando precisar 💜",
+visual:"12 seg. Texto crescente emocional.",
+audio:"🎵 Música emocional",
+tasks:["Montar Reel escolha","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'No grupo é: pesquisadora / ansiosa / zen'","💫 'Seu bebê te escolheu 💜'","📝 Caixinha: 'Print mais engraçado do grupo'"]},
+
+// DIA 27
+{day:27,title:"Compras + Dedinhos 🤏",phase:"consolidar",
+posts:[
+{type:"reel",time:"11h30",title:"Compras desnecessárias 🛒",
+hook:"Coisas que grávida compra achando que precisa",
+content:"3ª almofada amamentação → Roupinha RN usará 1x → Enfeite porta maternidade → Kit berço temático → 47 chupetas → Aquecedor de lenço",
+cta:"Quantas comprou? Confessa 😂",
+visual:"10-12 seg. Itens + preço. Humor.",
+audio:"🎵 Trending compras",
+tasks:["Montar Reel compras","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"10 dedinhos 🤏",
+hook:"A primeira coisa que toda mãe faz",
+content:"Conta os dedos. 1,2,3...10. Mãos e pés. Mesmo sabendo que tá bem. Só acredita quando vê. E quando vê, chora. Tá tudo ali. Perfeito. Seu.",
+cta:"Marca mãe que fez isso ❤️",
+visual:"12 seg. Close mãozinha. Emocional forte.",
+audio:"🔊 Silêncio + heartbeat",
+tasks:["Montar Reel dedinhos","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Compra inútil: aquecedor lenço / kit berço'","🥹 'Contou dedinhos?'","🔄 Repost emocional"]},
+
+// DIA 28
+{day:28,title:"Dormindo + Corpo Pós-Parto 😴",phase:"consolidar",
+posts:[
+{type:"reel",time:"11h30",title:"Missão: dormir grávida 🛏️",
+hook:"Grávida tentando posição pra dormir",
+content:"Esquerdo: azia → Direito: formigou → Costas: não pode → Bruços: impossível → Travesseiro: caiu → Sentada: dor → *Abre celular às 3h*",
+cta:"Marca grávida que não dorme 😂",
+visual:"7-10 seg. Transição posições. Humor.",
+audio:"🎵 Trending frustração cômica",
+tasks:["Montar Reel dormir","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"Corpo pós-parto: história de força 💪",
+hook:"Sobre o corpo depois do parto",
+content:"Vai mudar. Vai ter marcas. Formas diferentes. Tudo conta história: como você criou vida. Não é 'estragado'. Fez o impossível. Respeite. Merece.",
+cta:"Compartilha se concorda 💪",
+visual:"15 seg. Empoderador. Tons quentes.",
+audio:"🎵 Empoderador trending",
+tasks:["Montar Reel empoderamento","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Posição: travesseiro entre pernas / qualquer uma'","💪 'Seu corpo evoluiu, não estragou.'","🔄 Repost empoderamento"]},
+
+// DIA 29
+{day:29,title:"Chá de Bebê + Fechamento 🎉",phase:"consolidar",
+posts:[
+{type:"reel",time:"11h30",title:"Grávida no chá de bebê 🎁",
+hook:"A grávida no chá de bebê dela",
+content:"'Que lindo!' *fralda* → 'Que lindo!' *body* → 'Que lindo!' *manta* → *Chora no sapatinho* → 'Lindo!' *fralda* → *3 pratos de bolo* → 'Preciso fazer xixi' (12ª vez)",
+cta:"Marca quem chorou no chá 😂",
+visual:"10-12 seg. Sequência rápida. Humor+emoção.",
+audio:"🎵 Trending festivo",
+tasks:["Montar Reel chá de bebê","Postar às 11h30"]},
+{type:"reel",time:"20h",title:"30 dias — De 0 a comunidade 🏆",
+hook:"30 dias atrás esse perfil não existia",
+content:"Zero seguidores → Hoje, VOCÊS. Comunidade de mães, grávidas, pais, avós. Cada comentário, mensagem, 'me identifiquei'. É por vocês. Obrigada. Isso é só o começo. 💜",
+cta:"Compartilha se te ajudou. Cada share = outra mãe encontra a gente.",
+visual:"15 seg. Montagem melhores momentos. Emocional + celebração.",
+audio:"🎵 Trending conquista",
+tasks:["Montar Reel fechamento mês","Postar às 20h"]}
+],
+stories:["📊 Enquete: 'Favorito do mês? Humor / Emoção / Curiosidade / Direitos'","🏆 'OBRIGADA por 30 dias! 💜'","❓ 'O que querem ver no mês 2?'"]},
+
+// DIA 30 — ANÁLISE
+{day:30,title:"📊 ANÁLISE MENSAL COMPLETA",phase:"analisar",
+alert:"Análise completa do mês. NÃO postar conteúdo novo.",
+posts:[],
+analysis:{
+metrics:["📈 Total seguidores (semana a semana)","🏆 Top 5 posts por alcance","💬 Top 5 por comentários","🔄 Top 5 por compartilhamentos","📌 Top 5 por salvamentos","📊 Retenção média dos Reels","⏰ Melhor horário real","🎣 Melhor tipo de hook","🔗 Cliques link da bio (total)","📱 Leads no WhatsApp","💰 ROI impulsionamento","👥 Melhores grupos Facebook"],
+decisions:["🎯 3 formatos vencedores para escalar","✂️ Cortar formatos fracos","💰 Orçamento ads mês 2","🔥 Iniciar conversão ativa? (stories CTA WhatsApp)","📌 Novo post fixado","📺 Criar séries de conteúdo?","🤝 Parcerias com outras páginas"]},
+stories:[]}
+];
+
+// ============================================================
+// STORAGE & PROGRESS
+// ============================================================
+const sk=(d,p,t)=>`mdg2_${d}_${p}_${t}`;
+const ssk=(d,i)=>`mdg2_${d}_s${i}`;
+const sak=(d,t,i)=>`mdg2_${d}_a${t}${i}`;
+const isOk=k=>localStorage.getItem(k)==='1';
+const toggle=k=>{localStorage.setItem(k,isOk(k)?'0':'1');render()};
+
+function allKeys(){
+  const k=[];
+  DAYS.forEach((d,di)=>{
+    d.posts.forEach((p,pi)=>(p.tasks||[]).forEach((_,ti)=>k.push(sk(di,pi,ti))));
+    (d.stories||[]).forEach((_,si)=>k.push(ssk(di,si)));
+    if(d.analysis){
+      d.analysis.metrics.forEach((_,i)=>k.push(sak(di,'m',i)));
+      d.analysis.decisions.forEach((_,i)=>k.push(sak(di,'d',i)));
+    }
+  });
+  return k;
+}
+function dayKeys(di){
+  const k=[],d=DAYS[di];
+  d.posts.forEach((p,pi)=>(p.tasks||[]).forEach((_,ti)=>k.push(sk(di,pi,ti))));
+  (d.stories||[]).forEach((_,si)=>k.push(ssk(di,si)));
+  if(d.analysis){
+    d.analysis.metrics.forEach((_,i)=>k.push(sak(di,'m',i)));
+    d.analysis.decisions.forEach((_,i)=>k.push(sak(di,'d',i)));
+  }
+  return k;
+}
+function dayProg(di){const k=dayKeys(di);if(!k.length)return{d:0,t:0,p:0};const d=k.filter(isOk).length;return{d,t:k.length,p:Math.round(d/k.length*100)}}
+function weekKeys(startDay,endDay){
+  const k=[];
+  DAYS.forEach((d,di)=>{if(d.day>=startDay&&d.day<=endDay)k.push(...dayKeys(di))});
+  return k;
+}
+function weekProg(s,e){const k=weekKeys(s,e);if(!k.length)return 0;return Math.round(k.filter(isOk).length/k.length*100)}
+
+// ============================================================
+// RENDER
+// ============================================================
+let activeDay=-1;
+const phases={plantar:{l:'🌱 Plantar',c:'phase-plantar'},crescer:{l:'📈 Crescer',c:'phase-crescer'},escalar:{l:'🚀 Escalar',c:'phase-escalar'},consolidar:{l:'👑 Consolidar',c:'phase-consolidar'},analisar:{l:'📊 Analisar',c:'phase-analisar'}};
+const htags=[
+['#gravida','#gestante','#gravidez','#mamaedeprimeiraviagem','#barrigadegravida','#dicasdegravida','#enxovaldebebe'],
+['#gravida','#maternidade','#bebe','#gravida2026','#vidademae','#quartodobebe','#maternidadereal'],
+['#gestante','#gravidez','#maternidade','#recemnascido','#mamaedeprimeiraviagem','#chadebebe','#dicasdegravida']
+];
+
+function ringSVG(pct,size=44,stroke=4){
+  const r=(size-stroke)/2,c=2*Math.PI*r,off=c-(pct/100)*c;
+  const color=pct===100?'var(--green)':pct>0?'var(--yellow)':'var(--border)';
+  return `<svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round"/></svg>`;
+}
+
+function renderDashboard(){
+  const ak=allKeys(),done=ak.filter(isOk).length,pct=ak.length?Math.round(done/ak.length*100):0;
+  const totalPosts=DAYS.reduce((s,d)=>s+d.posts.length,0);
+  const reels=DAYS.reduce((s,d)=>s+d.posts.filter(p=>p.type==='reel').length,0);
+  const currentPhase=pct<25?'🌱 Plantar':pct<50?'📈 Crescer':pct<75?'🚀 Escalar':pct<100?'👑 Consolidar':'✅ Completo';
+
+  document.getElementById('mainBar').style.width=pct+'%';
+  document.getElementById('mainText').textContent=`${done} de ${ak.length} tarefas • ${pct}% completo`;
+
+  document.getElementById('dashboard').innerHTML=`
+    <div class="dash-card dc-total"><div class="dash-emoji">📝</div><div class="dash-num">${totalPosts}</div><div class="dash-label">Posts Total</div></div>
+    <div class="dash-card dc-reels"><div class="dash-emoji">🎬</div><div class="dash-num">${reels}</div><div class="dash-label">Reels</div></div>
+    <div class="dash-card dc-done"><div class="dash-emoji">✅</div><div class="dash-num">${done}</div><div class="dash-label">Tarefas Feitas</div></div>
+    <div class="dash-card dc-pct"><div class="dash-emoji">📊</div><div class="dash-num">${pct}%</div><div class="dash-label">Progresso</div></div>
+    <div class="dash-card dc-phase"><div class="dash-emoji">🎯</div><div class="dash-num" style="font-size:1rem">${currentPhase}</div><div class="dash-label">Fase Atual</div></div>
+  `;
+}
+
+function renderCharts(){
+  const weeks=[
+    {label:'🌱 Sem 1',s:0,e:7,cls:'wb-1'},
+    {label:'📈 Sem 2',s:8,e:14,cls:'wb-2'},
+    {label:'📊 Análise',s:15,e:15,cls:'wb-3'},
+    {label:'🚀 Sem 3',s:16,e:22,cls:'wb-4'},
+    {label:'👑 Sem 4',s:23,e:30,cls:'wb-5'}
+  ];
+
+  let barsHtml=weeks.map(w=>{
+    const p=weekProg(w.s,w.e);
+    return `<div class="week-bar ${w.cls}"><div class="week-bar-label">${w.label}</div><div class="week-bar-track"><div class="week-bar-fill" style="height:${p}%"></div></div><div class="week-bar-pct">${p}%</div></div>`;
+  }).join('');
+
+  let circlesHtml=DAYS.map((d,i)=>{
+    const p=dayProg(i);
+    let cls='dc-empty';
+    if(p.p===100)cls='dc-complete';
+    else if(p.d>0)cls='dc-partial';
+    return `<div class="day-circle ${cls}" onclick="showDay(${i})" title="Dia ${d.day}: ${p.p}%">${d.day}</div>`;
+  }).join('');
+
+  document.getElementById('chartsSection').innerHTML=`
+    <div class="chart-card"><div class="chart-title">📊 Progresso por Semana</div><div class="week-bars">${barsHtml}</div></div>
+    <div class="chart-card"><div class="chart-title">🗓️ Progresso por Dia</div><div class="day-circles">${circlesHtml}</div></div>
+  `;
+}
+
+function renderNav(){
+  let h=`<button class="nav-btn ${activeDay===-1?'active':''}" onclick="showDay(-1)">📋 Visão Geral</button>`;
+  DAYS.forEach((d,i)=>{
+    const p=dayProg(i);
+    let cls=activeDay===i?'active':'';
+    if(!cls&&p.t>0){if(p.p===100)cls='nav-complete';else if(p.d>0)cls='nav-partial';}
+    const dot=p.p===100?'background:var(--green)':p.d>0?'background:var(--yellow)':'background:var(--border2)';
+    const emoji=d.day===15||d.day===30?'📊':d.posts.some(p=>p.sponsor)?'⚡':'';
+    h+=`<button class="nav-btn ${cls}" onclick="showDay(${i})"><span class="nav-dot" style="${dot}"></span>Dia ${d.day} ${emoji}</button>`;
+  });
+  document.getElementById('nav').innerHTML=h;
+}
+
+function checkHtml(key,label){
+  const d=isOk(key);
+  return `<div class="check-item ${d?'done':''}" onclick="toggle('${key}')"><div class="check-box"></div><div class="check-label">${label}</div></div>`;
+}
+
+function postHtml(post,di,pi){
+  const allDone=(post.tasks||[]).every((_,ti)=>isOk(sk(di,pi,ti)));
+  let h=`<div class="post-card ${allDone?'all-done':''}">`;
+  h+=`<div class="post-header">`;
+  h+=`<span class="badge badge-${post.type==='reel'?'reel':'imagem'}">${post.type==='reel'?'🎬 Reel':'🖼️ Imagem'}</span>`;
+  if(post.sponsor)h+=`<span class="badge badge-sponsor">💰 Patrocinar</span>`;
+  if(post.pin)h+=`<span class="badge badge-sponsor">📌 Fixar no Topo</span>`;
+  h+=`<span class="post-time">🕐 ${post.time}</span></div>`;
+  h+=`<div class="post-title">${post.title}</div>`;
+
+  if(post.hook)h+=`<div class="hook-box"><span class="hook-icon">🎣</span>"${post.hook}"</div>`;
+
+  h+=`<div class="field"><div class="field-label">📝 Roteiro</div><div class="field-value">${post.content.replace(/→/g,'<br>→')}</div></div>`;
+  if(post.visual)h+=`<div class="field"><div class="field-label">🎨 Visual</div><div class="field-value">${post.visual}</div></div>`;
+  if(post.audio)h+=`<div class="field"><div class="field-label">🔊 Áudio</div><div class="field-value">${post.audio}</div></div>`;
+  if(post.cta)h+=`<div class="cta-box"><span class="cta-icon">🎯</span>${post.cta}</div>`;
+
+  const hg=htags[DAYS[di].day%3];
+  h+=`<div class="hashtags">${hg.map(t=>`<span class="htag">${t}</span>`).join('')}</div>`;
+
+  if(post.tasks&&post.tasks.length){
+    const td=post.tasks.filter((_,ti)=>isOk(sk(di,pi,ti))).length;
+    h+=`<div class="checklist"><div class="checklist-title">✅ Tarefas (${td}/${post.tasks.length})</div>`;
+    post.tasks.forEach((t,ti)=>h+=checkHtml(sk(di,pi,ti),t));
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+function dayHtml(di){
+  const d=DAYS[di],p=dayProg(di),ph=phases[d.phase];
+  let h=`<div class="day-head">`;
+  h+=`<div class="day-head-num">DIA ${d.day}</div>`;
+  h+=`<div class="day-head-title">${d.title}</div>`;
+  h+=`<div class="day-head-phase ${ph.c}">${ph.l}</div>`;
+  if(p.t){
+    h+=`<div class="day-mini-progress"><div class="day-ring">${ringSVG(p.p)}<div class="day-ring-text">${p.p}%</div></div><span style="font-size:.8rem;color:var(--text3)">${p.d}/${p.t} tarefas</span></div>`;
+  }
+  h+=`</div>`;
+
+  if(d.alert)h+=`<div class="alert"><span class="alert-icon">⚡</span><span>${d.alert}</span></div>`;
+
+  d.posts.forEach((post,pi)=>h+=postHtml(post,di,pi));
+
+  // Analysis
+  if(d.analysis){
+    h+=`<div class="analysis-card"><div class="analysis-title">📊 Métricas para Analisar</div><div class="checklist">`;
+    d.analysis.metrics.forEach((m,i)=>h+=checkHtml(sak(di,'m',i),m));
+    h+=`</div></div>`;
+    h+=`<div class="analysis-card"><div class="analysis-title">🎯 Decisões para Tomar</div><div class="checklist">`;
+    d.analysis.decisions.forEach((dc,i)=>h+=checkHtml(sak(di,'d',i),dc));
+    h+=`</div></div>`;
+  }
+
+  // Stories
+  if(d.stories&&d.stories.length){
+    const sd=d.stories.filter((_,si)=>isOk(ssk(di,si))).length;
+    h+=`<div class="stories-section"><div class="stories-header"><span class="badge badge-story">📱 Stories do Dia</span><span style="font-size:.72rem;color:var(--text3);margin-left:auto">${sd}/${d.stories.length}</span></div>`;
+    d.stories.forEach((s,si)=>{
+      const done=isOk(ssk(di,si));
+      h+=`<div class="story-item ${done?'done':''}" onclick="toggle('${ssk(di,si)}')" style="cursor:pointer"><div class="check-item ${done?'done':''}"><div class="check-box"></div><div class="check-label">${s}</div></div></div>`;
+    });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+function overviewHtml(){
+  let h=`<div class="day-head"><div class="day-head-num" style="font-size:2.2rem">📋 VISÃO GERAL</div><div class="day-head-title">30 dias de conteúdo para viralizar</div></div>`;
+
+  // Rules
+  h+=`<div class="rules-card"><div class="rules-title">📏 Regras de Ouro</div><ul class="rules-list">
+    <li><span class="rules-icon">📅</span><strong>Frequência:</strong> 2 posts/dia (Reels) + 3-5 Stories</li>
+    <li><span class="rules-icon">⏰</span><strong>Horários:</strong> 11h30 e 20h (picos de grávida no celular)</li>
+    <li><span class="rules-icon">🎬</span><strong>Reels:</strong> 7-15 segundos (curto = melhor pra contas novas)</li>
+    <li><span class="rules-icon">🏷️</span><strong>Hashtags:</strong> 5-8 por post (3 alcance + 2 nicho + 2 engajamento)</li>
+    <li><span class="rules-icon">🚫</span><strong>NÃO postar</strong> entre 00h-07h e 14h-17h</li>
+    <li><span class="rules-icon">🎯</span><strong>98% Reels.</strong> Só 1 imagem (post fixado Dia 0)</li>
+    <li><span class="rules-icon">🚨</span>Postar os 3 primeiros do Dia 0 de uma vez ANTES de tudo</li>
+  </ul></div>`;
+
+  h+=`<div class="rules-card"><div class="rules-title">👥 Distribuição nos Grupos</div><ul class="rules-list">
+    <li><span class="rules-icon">👀</span><strong>Dia 0-2:</strong> Entrar em 15-20 grupos. Só curtir/comentar</li>
+    <li><span class="rules-icon">🌱</span><strong>Dia 3-5:</strong> Compartilhar conteúdo SEM citar página</li>
+    <li><span class="rules-icon">📢</span><strong>Dia 6-7:</strong> Curiosidade + "mais em @meudireitogestante"</li>
+    <li><span class="rules-icon">🔄</span><strong>Dia 8-30:</strong> 1 post/dia nos melhores grupos</li>
+  </ul></div>`;
+
+  h+=`<div class="rules-card"><div class="rules-title">💰 Investimento Ads (Opcional)</div><ul class="rules-list">
+    <li><span class="rules-icon">💵</span><strong>Dia 1-3:</strong> R$5/dia — melhor post (engajamento)</li>
+    <li><span class="rules-icon">💵</span><strong>Dia 4-7:</strong> R$10/dia — post mais orgânico</li>
+    <li><span class="rules-icon">💵</span><strong>Dia 8-30:</strong> R$10/dia — Reels com retenção >50%</li>
+    <li><span class="rules-icon">🎯</span><strong>Público:</strong> Mulheres 18-38 • Gravidez, Bebês, Maternidade</li>
+    <li><span class="rules-icon">📊</span><strong>Total 30 dias:</strong> ~R$250-300</li>
+  </ul></div>`;
+
+  // Cards
+  h+=`<div style="margin-top:20px"><div class="chart-title" style="margin-bottom:12px;padding-left:4px">🗓️ Todos os Dias</div><div class="overview-grid">`;
+  DAYS.forEach((d,i)=>{
+    const p=dayProg(i);
+    const types=[...new Set(d.posts.map(x=>x.type))];
+    const badges=types.map(t=>t==='reel'?'<span class="badge badge-reel" style="font-size:.6rem;padding:2px 6px">🎬</span>':'<span class="badge badge-imagem" style="font-size:.6rem;padding:2px 6px">🖼️</span>').join('');
+    const extra=d.posts.some(x=>x.sponsor)?'<span class="badge badge-sponsor" style="font-size:.6rem;padding:2px 6px">💰</span>':'';
+    const anal=d.analysis?'<span class="badge badge-analysis" style="font-size:.6rem;padding:2px 6px">📊</span>':'';
+    h+=`<div class="ov-card" onclick="showDay(${i})">
+      <div class="ov-day">Dia ${d.day}</div>
+      <div class="ov-title">${d.title}</div>
+      <div class="ov-tags">${badges}${extra}${anal}</div>
+      <div class="ov-bar"><div class="ov-bar-fill" style="width:${p.p}%"></div></div>
+      <div class="ov-pct">${p.d}/${p.t} • ${p.p}%</div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+function showDay(i){
+  activeDay=i;
+  document.getElementById('content').innerHTML=i===-1?overviewHtml():dayHtml(i);
+  renderNav();
+  window.scrollTo({top:document.getElementById('nav').offsetTop-60,behavior:'smooth'});
+}
+
+function render(){
+  renderDashboard();
+  renderCharts();
+  renderNav();
+  document.getElementById('content').innerHTML=activeDay===-1?overviewHtml():dayHtml(activeDay);
+}
+
+render();
+</script>
+</body>
+</html>
