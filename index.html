@@ -26,8 +26,62 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
+/* ===== LOGIN SCREEN ===== */
+.login-screen{position:fixed;inset:0;z-index:10000;background:#1a1714;display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+.login-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.login-wrapper{width:100%;max-width:380px;padding:20px;text-align:center}
+
+/* Login floating particles */
+.login-particles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.login-particle{position:absolute;border-radius:50%;opacity:.08;animation:floatParticle linear infinite}
+@keyframes floatParticle{0%{transform:translateY(100vh) rotate(0deg)}100%{transform:translateY(-100px) rotate(360deg)}}
+
+/* Login icon animation */
+.login-icon{width:90px;height:90px;border-radius:50%;background:var(--accent);margin:0 auto 28px;display:flex;align-items:center;justify-content:center;position:relative;animation:loginIconEntry .8s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0;transform:scale(0)}
+.login-icon::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(201,120,120,.2);animation:loginRing 3s ease-in-out infinite}
+.login-icon::after{content:'';position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(201,120,120,.08);animation:loginRing 3s ease-in-out .5s infinite}
+.login-icon svg{width:44px;height:44px}
+@keyframes loginIconEntry{0%{opacity:0;transform:scale(0) rotate(-20deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes loginRing{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.1);opacity:1}}
+
+.login-title{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700;color:var(--text);opacity:0;animation:loginSlide .5s ease-out .3s forwards;margin-bottom:4px}
+.login-title span{color:var(--accent)}
+.login-subtitle{font-size:.78rem;color:var(--text3);font-weight:500;letter-spacing:.5px;opacity:0;animation:loginSlide .5s ease-out .4s forwards;margin-bottom:32px}
+@keyframes loginSlide{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+
+.login-form{opacity:0;animation:loginSlide .5s ease-out .5s forwards;position:relative;z-index:1}
+.login-field{position:relative;margin-bottom:14px}
+.login-field-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--text3);pointer-events:none;transition:color .2s}
+.login-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px 14px 44px;font-size:.9rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all .25s}
+.login-input::placeholder{color:var(--text3)}
+.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.login-input:focus+.login-field-icon,.login-input:focus~.login-field-icon{color:var(--accent)}
+
+.login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .25s;margin-top:6px;position:relative;overflow:hidden}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,120,120,.25)}
+.login-btn:active{transform:translateY(0)}
+.login-btn.loading{pointer-events:none}
+.login-btn.loading::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center}
+
+.login-error{color:var(--red);font-size:.78rem;font-weight:600;margin-top:12px;opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center;gap:6px}
+.login-error.show{opacity:1;animation:loginShake .4s ease}
+@keyframes loginShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+.login-footer{margin-top:32px;font-size:.68rem;color:var(--text3);opacity:0;animation:loginSlide .5s ease-out .7s forwards}
+
+/* Greeting after login */
+.login-greeting{position:fixed;inset:0;z-index:10001;background:#1a1714;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s}
+.login-greeting.show{opacity:1;visibility:visible}
+.login-greeting.hidden{opacity:0;visibility:hidden}
+.greeting-emoji{font-size:3rem;animation:greetBounce .6s ease .2s forwards;opacity:0;transform:scale(0)}
+.greeting-text{font-family:'Fraunces',serif;font-size:1.4rem;color:var(--text);margin-top:16px;opacity:0;animation:loginSlide .5s ease-out .4s forwards}
+.greeting-text span{color:var(--accent)}
+.greeting-role{font-size:.78rem;color:var(--text3);margin-top:6px;opacity:0;animation:loginSlide .5s ease-out .6s forwards}
+@keyframes greetBounce{0%{opacity:0;transform:scale(0)}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
 /* ===== SPLASH SCREEN ===== */
-.splash{position:fixed;inset:0;z-index:9999;background:#1a1714;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+.splash{position:fixed;inset:0;z-index:9999;background:#1a1714;display:none;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+.splash.active{display:flex}
 .splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .splash-icon{width:80px;height:80px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;animation:splashPulse 1.2s ease-in-out infinite alternate,splashFadeIn .6s ease-out}
 .splash-icon svg{width:40px;height:40px}
@@ -217,6 +271,38 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-particles" id="particles"></div>
+  <div class="login-wrapper">
+    <div class="login-icon">
+      <svg viewBox="0 0 40 40" fill="none"><text x="20" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#fff">m</text></svg>
+    </div>
+    <div class="login-title">meu direito <span>gestante</span></div>
+    <div class="login-subtitle">📅 Painel de Conteúdo</div>
+    <form class="login-form" id="loginForm" onsubmit="return handleLogin(event)">
+      <div class="login-field">
+        <input type="text" class="login-input" id="loginUser" placeholder="Usuário" autocomplete="username" autofocus>
+        <span class="login-field-icon" style="pointer-events:none">👤</span>
+      </div>
+      <div class="login-field">
+        <input type="password" class="login-input" id="loginPass" placeholder="Senha" autocomplete="current-password">
+        <span class="login-field-icon" style="pointer-events:none">🔒</span>
+      </div>
+      <button type="submit" class="login-btn" id="loginBtn">Entrar ✨</button>
+      <div class="login-error" id="loginError">⚠️ Usuário ou senha incorretos</div>
+    </form>
+    <div class="login-footer">🤰 assessoria materna — acesso restrito</div>
+  </div>
+</div>
+
+<!-- GREETING SCREEN -->
+<div class="login-greeting" id="greetingScreen">
+  <div class="greeting-emoji" id="greetEmoji">👋</div>
+  <div class="greeting-text" id="greetText">Olá, <span>usuário</span>!</div>
+  <div class="greeting-role" id="greetRole">Carregando painel...</div>
+</div>
+
 <!-- SPLASH SCREEN -->
 <div class="splash" id="splash">
   <div class="splash-icon">
@@ -229,6 +315,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
+<div id="appWrapper" style="display:none">
 <div class="header">
   <div class="header-brand">
     <div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><text x="20" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#fff">m</text></svg></div>
@@ -245,6 +332,109 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 <div class="charts-section" id="chartsSection"></div>
 <nav class="nav" id="nav"></nav>
 <div class="container" id="content"></div>
+</div><!-- /appWrapper -->
+
+<script>
+// ============================================================
+// AUTH SYSTEM
+// ============================================================
+const USERS={
+  admin:{pass:'creio321123',name:'Admin',emoji:'👑',role:'Administrador'},
+  marcela:{pass:'filhadorei',name:'Marcela',emoji:'🎨',role:'Criadora de Conteúdo — Instagram'},
+  eduarda:{pass:'euteamo',name:'Eduarda',emoji:'🎬',role:'Criadora de Conteúdo — TikTok'}
+};
+
+let currentUser=null;
+
+// Generate floating particles
+(function(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<15;i++){
+    const p=document.createElement('div');
+    p.className='login-particle';
+    const size=Math.random()*40+10;
+    p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${Math.random()>.5?'var(--accent)':'var(--gold)'};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*5}s`;
+    c.appendChild(p);
+  }
+})();
+
+// Check if already logged in
+(function(){
+  const saved=sessionStorage.getItem('mdg_user');
+  if(saved&&USERS[saved]){
+    currentUser=saved;
+    document.getElementById('loginScreen').classList.add('hidden');
+    showApp();
+  }
+})();
+
+function handleLogin(e){
+  e.preventDefault();
+  const user=document.getElementById('loginUser').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginError');
+  const btn=document.getElementById('loginBtn');
+
+  err.classList.remove('show');
+
+  if(!USERS[user]||USERS[user].pass!==pass){
+    err.classList.add('show');
+    document.getElementById('loginPass').value='';
+    return false;
+  }
+
+  // Success
+  currentUser=user;
+  sessionStorage.setItem('mdg_user',user);
+  btn.classList.add('loading');
+  btn.textContent='Entrando...';
+
+  const u=USERS[user];
+
+  // Show greeting
+  setTimeout(()=>{
+    document.getElementById('loginScreen').classList.add('hidden');
+    const greet=document.getElementById('greetingScreen');
+    document.getElementById('greetEmoji').textContent=u.emoji;
+    document.getElementById('greetText').innerHTML=`Olá, <span>${u.name}</span>!`;
+    document.getElementById('greetRole').textContent=u.role;
+    greet.classList.add('show');
+
+    // After greeting, show splash then app
+    setTimeout(()=>{
+      greet.classList.add('hidden');
+      setTimeout(()=>{
+        greet.remove();
+        showSplashThenApp();
+      },500);
+    },1800);
+  },600);
+
+  return false;
+}
+
+function showSplashThenApp(){
+  const splash=document.getElementById('splash');
+  splash.classList.add('active');
+  // Re-trigger animations
+  splash.innerHTML=`
+    <div class="splash-icon"><svg viewBox="0 0 40 40" fill="none"><text x="20" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#fff">m</text></svg></div>
+    <div class="splash-logo"><div class="logo-top">meu direito <span class="logo-accent">gestante</span></div><div class="logo-sub">assessoria materna</div></div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  `;
+  setTimeout(()=>{
+    splash.classList.add('hidden');
+    document.getElementById('appWrapper').style.display='block';
+    setTimeout(()=>splash.remove(),700);
+  },2600);
+}
+
+function showApp(){
+  document.getElementById('splash').remove();
+  document.getElementById('greetingScreen').remove();
+  document.getElementById('appWrapper').style.display='block';
+}
+</script>
 
 <script>
 // ============================================================
@@ -1116,13 +1306,6 @@ function render(){
 }
 
 render();
-
-// Splash screen
-setTimeout(()=>{
-  const splash=document.getElementById('splash');
-  splash.classList.add('hidden');
-  setTimeout(()=>splash.remove(),700);
-},2600);
 </script>
 </body>
 </html>
