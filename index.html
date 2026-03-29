@@ -321,7 +321,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
     <div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><text x="20" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#fff">m</text></svg></div>
     <h1>meu direito <span>gestante</span></h1>
   </div>
-  <p>📅 Calendário 30 Dias — De Zero a Viral</p>
+  <p id="headerSub">📅 Calendário 30 Dias — De Zero a Viral</p>
   <div class="header-progress">
     <div class="header-progress-bar"><div class="header-progress-fill" id="mainBar"></div></div>
     <div class="header-progress-text" id="mainText">Carregando...</div>
@@ -345,6 +345,7 @@ const USERS={
 };
 
 let currentUser=null;
+const isTk=()=>currentUser==='eduarda';
 
 // Generate floating particles
 (function(){
@@ -1057,9 +1058,12 @@ stories:[]}
 // ============================================================
 // STORAGE & PROGRESS
 // ============================================================
-const sk=(d,p,t)=>`mdg2_${d}_${p}_${t}`;
-const ssk=(d,i)=>`mdg2_${d}_s${i}`;
-const sak=(d,t,i)=>`mdg2_${d}_a${t}${i}`;
+function pfx(){return isTk()?'tk_':'ig_'}
+const sk=(d,p,t)=>`${pfx()}${d}_${p}_${t}`;
+const ssk=(d,i)=>`${pfx()}${d}_s${i}`;
+const sak=(d,t,i)=>`${pfx()}${d}_a${t}${i}`;
+// Migrate old mdg2_ keys to ig_
+(function(){if(localStorage.getItem('_migrated'))return;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('mdg2_')){const nk='ig_'+k.slice(5);if(!localStorage.getItem(nk))localStorage.setItem(nk,localStorage.getItem(k));}}localStorage.setItem('_migrated','1');})();
 const isOk=k=>localStorage.getItem(k)==='1';
 const toggle=k=>{localStorage.setItem(k,isOk(k)?'0':'1');render()};
 
@@ -1098,11 +1102,17 @@ function weekProg(s,e){const k=weekKeys(s,e);if(!k.length)return 0;return Math.r
 // ============================================================
 let activeDay=-1;
 const phases={plantar:{l:'🌱 Plantar',c:'phase-plantar'},crescer:{l:'📈 Crescer',c:'phase-crescer'},escalar:{l:'🚀 Escalar',c:'phase-escalar'},consolidar:{l:'👑 Consolidar',c:'phase-consolidar'},analisar:{l:'📊 Analisar',c:'phase-analisar'}};
-const htags=[
+const htags_ig=[
 ['#gravida','#gestante','#gravidez','#mamaedeprimeiraviagem','#barrigadegravida','#dicasdegravida','#enxovaldebebe'],
 ['#gravida','#maternidade','#bebe','#gravida2026','#vidademae','#quartodobebe','#maternidadereal'],
 ['#gestante','#gravidez','#maternidade','#recemnascido','#mamaedeprimeiraviagem','#chadebebe','#dicasdegravida']
 ];
+const htags_tk=[
+['#gravida','#gravidez','#gestante','#tiktokmae','#gravidezreal','#fyp','#viral'],
+['#maternidade','#bebe','#primeiragravidez','#direitosdagestante','#dicasgestante','#fyp','#viral'],
+['#gravida','#gestante','#maedeprimeiraviagem','#gestacao','#vidareal','#fyp','#dicasgestante']
+];
+function htags(){return isTk()?htags_tk:htags_ig}
 
 function ringSVG(pct,size=44,stroke=4){
   const r=(size-stroke)/2,c=2*Math.PI*r,off=c-(pct/100)*c;
@@ -1114,14 +1124,18 @@ function renderDashboard(){
   const ak=allKeys(),done=ak.filter(isOk).length,pct=ak.length?Math.round(done/ak.length*100):0;
   const totalPosts=DAYS.reduce((s,d)=>s+d.posts.length,0);
   const reels=DAYS.reduce((s,d)=>s+d.posts.filter(p=>p.type==='reel').length,0);
-  const currentPhase=pct<25?'🌱 Plantar':pct<50?'📈 Crescer':pct<75?'🚀 Escalar':pct<100?'👑 Consolidar':'✅ Completo';
+  const tk=isTk();
+  const currentPhase=tk
+    ?(pct<20?'🚀 Decolagem':pct<40?'📈 Tração':pct<60?'🔥 Viralização':pct<80?'👑 Autoridade':pct<100?'🏆 Escala':'✅ Completo')
+    :(pct<25?'🌱 Plantar':pct<50?'📈 Crescer':pct<75?'🚀 Escalar':pct<100?'👑 Consolidar':'✅ Completo');
 
+  document.getElementById('headerSub').textContent=tk?'🎵 Calendário TikTok — 100 Vídeos em 50 Dias':'📅 Calendário 30 Dias — De Zero a Viral';
   document.getElementById('mainBar').style.width=pct+'%';
   document.getElementById('mainText').textContent=`${done} de ${ak.length} tarefas • ${pct}% completo`;
 
   document.getElementById('dashboard').innerHTML=`
-    <div class="dash-card dc-total"><div class="dash-emoji">📝</div><div class="dash-num">${totalPosts}</div><div class="dash-label">Posts Total</div></div>
-    <div class="dash-card dc-reels"><div class="dash-emoji">🎬</div><div class="dash-num">${reels}</div><div class="dash-label">Reels</div></div>
+    <div class="dash-card dc-total"><div class="dash-emoji">📝</div><div class="dash-num">${totalPosts}</div><div class="dash-label">${tk?'Vídeos Total':'Posts Total'}</div></div>
+    <div class="dash-card dc-reels"><div class="dash-emoji">🎬</div><div class="dash-num">${reels}</div><div class="dash-label">${tk?'Vídeos TikTok':'Reels'}</div></div>
     <div class="dash-card dc-done"><div class="dash-emoji">✅</div><div class="dash-num">${done}</div><div class="dash-label">Tarefas Feitas</div></div>
     <div class="dash-card dc-pct"><div class="dash-emoji">📊</div><div class="dash-num">${pct}%</div><div class="dash-label">Progresso</div></div>
     <div class="dash-card dc-phase"><div class="dash-emoji">🎯</div><div class="dash-num" style="font-size:1rem">${currentPhase}</div><div class="dash-label">Fase Atual</div></div>
@@ -1178,7 +1192,7 @@ function postHtml(post,di,pi){
   const allDone=(post.tasks||[]).every((_,ti)=>isOk(sk(di,pi,ti)));
   let h=`<div class="post-card ${allDone?'all-done':''}">`;
   h+=`<div class="post-header">`;
-  h+=`<span class="badge badge-${post.type==='reel'?'reel':'imagem'}">${post.type==='reel'?'🎬 Reel':'🖼️ Imagem'}</span>`;
+  h+=`<span class="badge badge-${post.type==='reel'?'reel':'imagem'}">${post.type==='reel'?(isTk()?'🎵 Vídeo':'🎬 Reel'):'🖼️ Imagem'}</span>`;
   if(post.sponsor)h+=`<span class="badge badge-sponsor">💰 Patrocinar</span>`;
   if(post.pin)h+=`<span class="badge badge-sponsor">📌 Fixar no Topo</span>`;
   h+=`<span class="post-time">🕐 ${post.time}</span></div>`;
@@ -1189,9 +1203,9 @@ function postHtml(post,di,pi){
   h+=`<div class="field"><div class="field-label">📝 Roteiro</div><div class="field-value">${post.content.replace(/→/g,'<br>→')}</div></div>`;
   if(post.visual)h+=`<div class="field"><div class="field-label">🎨 Visual</div><div class="field-value">${post.visual}</div></div>`;
   if(post.audio)h+=`<div class="field"><div class="field-label">🔊 Áudio</div><div class="field-value">${post.audio}</div></div>`;
-  if(post.cta)h+=`<div class="cta-box"><span class="cta-icon">🎯</span>${post.cta}</div>`;
+  if(post.cta){let cta=post.cta;if(isTk())cta=cta.replace(/Reel/gi,'vídeo').replace(/salva/gi,'salva').replace(/link na bio/gi,'link na bio');h+=`<div class="cta-box"><span class="cta-icon">🎯</span>${cta}</div>`;}
 
-  const hg=htags[DAYS[di].day%3];
+  const hg=htags()[DAYS[di].day%3];
   h+=`<div class="hashtags">${hg.map(t=>`<span class="htag">${t}</span>`).join('')}</div>`;
 
   if(post.tasks&&post.tasks.length){
@@ -1232,7 +1246,7 @@ function dayHtml(di){
   // Stories
   if(d.stories&&d.stories.length){
     const sd=d.stories.filter((_,si)=>isOk(ssk(di,si))).length;
-    h+=`<div class="stories-section"><div class="stories-header"><span class="badge badge-story">📱 Stories do Dia</span><span style="font-size:.72rem;color:var(--text3);margin-left:auto">${sd}/${d.stories.length}</span></div>`;
+    h+=`<div class="stories-section"><div class="stories-header"><span class="badge badge-story">${isTk()?'💡 Ideias Extras':'📱 Stories do Dia'}</span><span style="font-size:.72rem;color:var(--text3);margin-left:auto">${sd}/${d.stories.length}</span></div>`;
     d.stories.forEach((s,si)=>{
       const done=isOk(ssk(di,si));
       h+=`<div class="story-item ${done?'done':''}" onclick="toggle('${ssk(di,si)}')" style="cursor:pointer"><div class="check-item ${done?'done':''}"><div class="check-box"></div><div class="check-label">${s}</div></div></div>`;
@@ -1243,9 +1257,41 @@ function dayHtml(di){
 }
 
 function overviewHtml(){
-  let h=`<div class="day-head"><div class="day-head-num" style="font-size:2.2rem">📋 VISÃO GERAL</div><div class="day-head-title">30 dias de conteúdo para viralizar</div></div>`;
+  const tk=isTk();
+  let h=`<div class="day-head"><div class="day-head-num" style="font-size:2.2rem">📋 VISÃO GERAL</div><div class="day-head-title">${tk?'50 dias de vídeos TikTok para viralizar':'30 dias de conteúdo para viralizar'}</div></div>`;
 
-  // Rules
+  if(tk){
+  // Regras TikTok
+  h+=`<div class="rules-card"><div class="rules-title">📏 Regras de Ouro — TikTok</div><ul class="rules-list">
+    <li><span class="rules-icon">📅</span><strong>Frequência:</strong> 2 vídeos/dia (100 vídeos em 50 dias)</li>
+    <li><span class="rules-icon">⏰</span><strong>Horários:</strong> 12h e 20h (picos FYP gestantes)</li>
+    <li><span class="rules-icon">🎵</span><strong>Vídeos:</strong> 60% de 15-30s, 30% de 30-60s, 10% de 7-15s</li>
+    <li><span class="rules-icon">🏷️</span><strong>Hashtags:</strong> 3 alcance + 2 nicho + 2 trend (#fyp #viral). Máximo 8</li>
+    <li><span class="rules-icon">🚫</span><strong>NÃO postar</strong> entre 01h-09h</li>
+    <li><span class="rules-icon">📱</span><strong>SEMPRE</strong> legendas/texto na tela (maioria assiste sem som)</li>
+    <li><span class="rules-icon">⚡</span><strong>Hook nos 2 primeiros segundos</strong> decide TUDO no TikTok</li>
+    <li><span class="rules-icon">🔄</span><strong>Loops</strong> = hack de watch time. Vídeo que repete = mais views</li>
+    <li><span class="rules-icon">💬</span><strong>CTA padrão:</strong> "Comenta EU QUERO que te mando"</li>
+  </ul></div>`;
+
+  h+=`<div class="rules-card"><div class="rules-title">🎯 Algoritmo TikTok</div><ul class="rules-list">
+    <li><span class="rules-icon">🌍</span><strong>FYP:</strong> distribui pra desconhecidos desde o 1º vídeo</li>
+    <li><span class="rules-icon">💬</span><strong>Prioridade:</strong> Comentários > Compartilhamentos > Likes</li>
+    <li><span class="rules-icon">🔥</span><strong>Autenticidade</strong> performa melhor que produção polida</li>
+    <li><span class="rules-icon">📹</span><strong>Responder comentários</strong> com novos vídeos = crescimento exponencial</li>
+    <li><span class="rules-icon">👩</span><strong>Público:</strong> Gestantes 18-28 anos, classe C/D, 1º filho</li>
+  </ul></div>`;
+
+  h+=`<div class="rules-card"><div class="rules-title">🎬 Formatos por Fase</div><ul class="rules-list">
+    <li><span class="rules-icon">🚀</span><strong>Fase 1 (Dia 1-10):</strong> Curiosidades, humor, identificação — POV + Listas</li>
+    <li><span class="rules-icon">📈</span><strong>Fase 2 (Dia 11-20):</strong> Trends, séries, direitos — POV + Greenscreen</li>
+    <li><span class="rules-icon">🔥</span><strong>Fase 3 (Dia 21-30):</strong> Direitos, conversão passiva — Educativo + Greenscreen</li>
+    <li><span class="rules-icon">👑</span><strong>Fase 4 (Dia 31-40):</strong> Autoridade, séries completas — Educativo + Emocional</li>
+    <li><span class="rules-icon">🏆</span><strong>Fase 5 (Dia 41-50):</strong> Comunidade, challenges — Trend + Storytime</li>
+  </ul></div>`;
+
+  }else{
+  // Regras Instagram (original)
   h+=`<div class="rules-card"><div class="rules-title">📏 Regras de Ouro</div><ul class="rules-list">
     <li><span class="rules-icon">📅</span><strong>Frequência:</strong> 2 posts/dia (Reels) + 3-5 Stories</li>
     <li><span class="rules-icon">⏰</span><strong>Horários:</strong> 11h30 e 20h (picos de grávida no celular)</li>
@@ -1270,13 +1316,14 @@ function overviewHtml(){
     <li><span class="rules-icon">🎯</span><strong>Público:</strong> Mulheres 18-38 • Gravidez, Bebês, Maternidade</li>
     <li><span class="rules-icon">📊</span><strong>Total 30 dias:</strong> ~R$250-300</li>
   </ul></div>`;
+  }
 
   // Cards
   h+=`<div style="margin-top:20px"><div class="chart-title" style="margin-bottom:12px;padding-left:4px">🗓️ Todos os Dias</div><div class="overview-grid">`;
   DAYS.forEach((d,i)=>{
     const p=dayProg(i);
     const types=[...new Set(d.posts.map(x=>x.type))];
-    const badges=types.map(t=>t==='reel'?'<span class="badge badge-reel" style="font-size:.6rem;padding:2px 6px">🎬</span>':'<span class="badge badge-imagem" style="font-size:.6rem;padding:2px 6px">🖼️</span>').join('');
+    const badges=types.map(t=>t==='reel'?`<span class="badge badge-reel" style="font-size:.6rem;padding:2px 6px">${isTk()?'🎵':'🎬'}</span>`:'<span class="badge badge-imagem" style="font-size:.6rem;padding:2px 6px">🖼️</span>').join('');
     const extra=d.posts.some(x=>x.sponsor)?'<span class="badge badge-sponsor" style="font-size:.6rem;padding:2px 6px">💰</span>':'';
     const anal=d.analysis?'<span class="badge badge-analysis" style="font-size:.6rem;padding:2px 6px">📊</span>':'';
     h+=`<div class="ov-card" onclick="showDay(${i})">
