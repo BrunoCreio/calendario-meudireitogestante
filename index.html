@@ -357,6 +357,10 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 
 <div id="appWrapper" style="display:none">
 <div class="header">
+  <div class="header-top" id="headerTop" style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:10px;font-size:.75rem">
+    <span id="headerUser" style="color:var(--text3);font-weight:600"></span>
+    <button onclick="localStorage.removeItem('mdg_user');location.reload()" style="background:var(--card);border:1px solid var(--border);color:var(--text3);padding:4px 10px;border-radius:8px;font-size:.7rem;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">Sair</button>
+  </div>
   <div class="header-brand">
     <div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><text x="20" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#fff">m</text></svg></div>
     <h1>meu direito <span>gestante</span></h1>
@@ -385,6 +389,8 @@ const USERS={
 };
 
 let currentUser=null;
+let currentView='instagram';
+const VIEW_MAP={marcela:'instagram',eduarda:'tiktok',admin:'admin'};
 const isTk=()=>currentUser==='eduarda';
 
 // Generate floating particles
@@ -452,6 +458,16 @@ function handleLogin(e){
   },600);
 
   return false;
+}
+
+function initView(){
+  currentView=VIEW_MAP[currentUser]||'instagram';
+  if(currentView==='tiktok')document.getElementById('appWrapper').classList.add('tk');
+  const u=USERS[currentUser];
+  if(u){
+    const el=document.getElementById('headerUser');
+    if(el)el.textContent=u.emoji+' '+u.name+' — '+u.role;
+  }
 }
 
 function showSplashThenApp(){
