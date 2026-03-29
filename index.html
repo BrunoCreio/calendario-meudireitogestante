@@ -465,12 +465,15 @@ function showSplashThenApp(){
   `;
   setTimeout(()=>{
     splash.classList.add('hidden');
+    initView();
     document.getElementById('appWrapper').style.display='block';
+    if(typeof render==='function')render();
     setTimeout(()=>splash.remove(),700);
   },2600);
 }
 
 function showApp(){
+  initView();
   document.getElementById('splash').remove();
   document.getElementById('greetingScreen').remove();
   document.getElementById('appWrapper').style.display='block';
